@@ -1,0 +1,960 @@
+<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#151422"><title>Pianolektion B35.11</title><link rel="manifest" href="manifest.webmanifest"><style>
+*{box-sizing:border-box}body{margin:0;background:#161323;color:#fff;font-family:system-ui,-apple-system,sans-serif}button,input{font:inherit}button{cursor:pointer;color:white;background:#252035c9;border:1px solid #ffffff4a;border-radius:13px;padding:11px 13px}button:disabled{opacity:.35}button.primary{background:#ffc48d;color:#241827;font-weight:750}main{min-height:100dvh;position:relative;isolation:isolate;padding:16px;overflow:hidden}.back{position:absolute;inset:0;z-index:-2;background-image:linear-gradient(#0809146b,#090918a3),url('pianorum.jpg');background-position:center;background-size:cover}.layout{display:grid;grid-template-columns:minmax(220px,300px) minmax(0,1fr);gap:16px;max-width:1150px;margin:auto}.panel{background:#10111f9c;backdrop-filter:blur(9px);border:1px solid #ffffff35;border-radius:19px;padding:16px}.header{font-size:24px;font-weight:800;margin-bottom:14px}.small{font-size:12px;color:#dfd5e1}.parts{display:grid;gap:8px;margin:12px 0}.part{display:flex;text-align:left;align-items:center;gap:10px;width:100%;background:#ffffff12}.part.active{outline:2px solid var(--accent)}.dot{width:9px;height:33px;border-radius:8px}.part strong{display:block}.controls{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}.dial{width:min(74vw,470px);aspect-ratio:1;position:relative;margin:15px auto;border-radius:50%;isolation:isolate}.dial::before{content:"";position:absolute;inset:7%;border-radius:50%;background-image:linear-gradient(#090c1860,#090c1860),var(--custom-photo,url("pianorum.jpg"));background-size:auto 115vh;background-position:center;z-index:-1}.dial .shade{position:absolute;inset:7%;border-radius:50%;background:#080c1cdb;mask-image:conic-gradient(transparent 0deg var(--angle,0deg),black var(--angle,0deg) 360deg);-webkit-mask-image:conic-gradient(transparent 0deg var(--angle,0deg),black var(--angle,0deg) 360deg)}.dial svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);filter:drop-shadow(0 0 9px #fff5)}.dial .numbers{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;text-shadow:0 2px 10px #000,0 0 20px #000;pointer-events:none}.time{font-size:clamp(43px,9vw,84px);font-weight:800;font-variant-numeric:tabular-nums}.field{display:grid;grid-template-columns:1fr 100px;gap:8px;margin:9px 0;align-items:center}input{min-width:0;width:100%;background:#171626;border:1px solid #ffffff66;border-radius:8px;color:white;padding:8px}.hidden{display:none!important}.fire{position:fixed;inset:0;pointer-events:none;z-index:9}.spark{position:absolute;left:var(--x);top:var(--y);width:6px;height:6px;border-radius:50%;background:var(--c);box-shadow:0 0 12px var(--c);animation:burst 1.5s ease-out both;animation-delay:var(--delay)}@keyframes burst{0%{opacity:0;transform:translate(0,0) scale(.2)}15%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.2)}}.focus .sidebar{display:none}.focus .layout{display:block;max-width:850px}.focus .timerpanel{background:#0b0b1933}.focus .dial{width:min(84vw,620px)}@media(max-width:720px){.layout{display:flex;flex-direction:column}.timerpanel{order:0}.sidebar{order:1}.dial{width:min(78vw,430px)}.header{font-size:21px}}
+
+/* B5: portrait timer-first layout, landscape automatic focus */
+.timerpanel{position:relative;background:#10111f6b;backdrop-filter:blur(5px)}
+.timerpanel .dial{width:min(78vw,470px)}
+@media(max-width:720px){main{padding:10px}.layout{gap:12px}.timerpanel{padding:13px}.timerpanel .dial{width:min(86vw,430px)}.sidebar{padding:15px}.controls button{padding:10px}}
+@media(orientation:landscape) and (max-height:600px){
+ main{padding:4px 8px;min-height:100dvh}
+ .layout{display:block;max-width:none;height:calc(100dvh - 8px)}
+ .sidebar{display:none!important}
+ .timerpanel{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;border:0;background:transparent;backdrop-filter:none;padding:0}
+ .timerpanel>div:first-child{position:absolute;top:5px;left:10px;right:10px;z-index:2}
+ .timerpanel .dial{width:min(70vh,48vw,460px);margin:0 auto}
+ .timerpanel .time{font-size:clamp(34px,12vh,74px)}
+ .timerpanel .controls{position:absolute;bottom:4px;left:0;right:0;gap:12px}
+ .timerpanel .controls button{padding:7px 13px;font-size:13px;background:#171626bc}
+ .timerpanel .controls:last-child{display:none}
+ .timerpanel #status{position:absolute;right:14px;top:28px;font-size:11px}
+ .timerpanel #focus{display:none}
+ .timerpanel #name{font-size:13px}
+ .dial .numbers .small{font-size:11px}
+}
+@media(orientation:landscape) and (max-height:600px) and (max-width:800px){.timerpanel .dial{width:min(70vh,50vw)}.timerpanel .controls button{padding:6px 10px}}
+
+/* B6 – photograph across full viewport; glass interface floats over it */
+main{min-height:100dvh;background:transparent}
+.back{position:fixed;inset:0;z-index:-2;background-image:linear-gradient(90deg,#100c192b,#120c1a10),url('pianorum.jpg');background-size:cover;background-position:center;filter:none}
+.layout{max-width:1450px;grid-template-columns:minmax(245px,330px) minmax(0,1fr);align-items:center;min-height:calc(100dvh - 32px)}
+.sidebar{background:#130f1bd9;backdrop-filter:blur(15px);box-shadow:0 12px 45px #0006}
+.timerpanel{border:0!important;box-shadow:none!important;background:transparent!important;backdrop-filter:none!important}
+.timerpanel .dial{width:min(69vw,660px);max-height:76dvh;max-width:76dvh}
+.dial::before{inset:7%;background-image:var(--custom-photo,url('pianorum.jpg'));background-size:cover;background-position:center;opacity:1}
+.dial .shade{inset:7%;background:#070916d9}
+.dial svg{filter:drop-shadow(0 0 7px #ffffff6b)}
+.dial .numbers{z-index:2;text-shadow:0 2px 8px #000,0 0 22px #000}
+.dial .numbers .time{font-weight:760}
+.timerpanel .controls button{background:#16101cbd;backdrop-filter:blur(10px);box-shadow:0 5px 16px #0004}
+.timerpanel .controls .primary{background:#ffc48d;color:#241827}
+.part{background:#ffffff0d}.part.active{background:#ffc48d18}
+@media(max-width:720px){
+ main{padding:8px}.layout{min-height:calc(100dvh - 16px);gap:8px}
+ .timerpanel{padding:6px!important}.timerpanel .dial{width:min(94vw,470px);max-height:none;max-width:none;margin:4px auto}
+ .timerpanel .controls button{font-size:13px;padding:9px 11px}
+ .sidebar{padding:14px;background:#110d1cdb}
+ .header{margin-bottom:8px}
+}
+@media(orientation:landscape) and (max-height:600px){
+ .layout{height:calc(100dvh - 8px);min-height:0}
+ .timerpanel .dial{width:min(79vh,54vw,520px);max-height:none;max-width:none}
+ .timerpanel .controls{bottom:1px}
+ .timerpanel .controls button{font-size:12px;padding:6px 12px}
+ .timerpanel .numbers .time{font-size:clamp(33px,12vh,76px)}
+}
+
+/* B7: continuous photograph, translucent floral ring, warm reveal edge */
+.dial::before{display:none!important}
+.dial .shade{inset:7%;background:rgba(6,8,20,.80);z-index:0}
+.dial .numbers{z-index:4}
+.dial svg{z-index:3}
+.dial .glow-edge{position:absolute;inset:7%;border-radius:50%;z-index:2;pointer-events:none;background:conic-gradient(from -90deg,transparent 0deg calc(var(--angle-num,0)*1deg - 1.1deg),#fff4bbdb calc(var(--angle-num,0)*1deg),#ffc27455 calc(var(--angle-num,0)*1deg + 1.7deg),transparent calc(var(--angle-num,0)*1deg + 3deg));mask-image:radial-gradient(circle,transparent 0 44%,#0008 65%,transparent 80%);-webkit-mask-image:radial-gradient(circle,transparent 0 44%,#0008 65%,transparent 80%);filter:drop-shadow(0 0 8px #ffc97d)}
+.dial .floral{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:visible}
+.dial .floral span{position:absolute;left:50%;top:50%;font-size:clamp(11px,1.65vw,22px);opacity:.77;text-shadow:0 0 8px currentColor;transform:translate(-50%,-50%) rotate(var(--rot)) translateY(calc(var(--radius) * -1)) rotate(calc(-1 * var(--rot)));}
+.timerpanel{overflow:visible!important}
+@media(max-width:720px){.dial .floral span{font-size:clamp(10px,3.3vw,17px)}.timerpanel .controls{gap:6px}.timerpanel .controls button{padding:9px 8px;font-size:12px}}
+@media(orientation:landscape) and (max-height:600px){.timerpanel .controls button{padding:6px 9px}}
+
+/* B8: one continuous sharp photograph across viewport and transparent timer */
+.back{background-image:url('pianorum.jpg?v=8')!important;background-position:center center!important;background-size:cover!important;filter:none!important}
+.dial{isolation:auto!important}
+.dial::before{display:none!important}
+.dial .shade{inset:7%;background:rgba(5,7,17,.77);z-index:1}
+.dial .glow-edge{z-index:2}
+.dial svg,.dial .floral{z-index:3}
+.dial .numbers{z-index:4}
+.timerpanel{background:transparent!important;backdrop-filter:none!important}
+.dial .floral span{opacity:.95;text-shadow:0 0 6px currentColor,0 0 12px currentColor}
+.dial svg{filter:drop-shadow(0 0 5px #ffdeb875)}
+@media(max-width:720px){.timerpanel .dial{width:min(91vw,470px)}.timerpanel .controls button{font-size:12px}}
+@media(orientation:landscape) and (max-height:600px){.timerpanel .dial{width:min(76vh,52vw,510px)}}
+
+/* B9: original clean high resolution background, no decorative flowers in ring */
+.back{background-image:url('pianorum.jpg')!important;background-color:#15101b!important;background-position:center center!important;background-size:cover!important;filter:none!important}
+.dial .shade{background:rgba(6,8,19,.76)!important;inset:7%;}
+.dial .floral{display:none!important}
+.dial svg{filter:drop-shadow(0 0 6px #ffddaa77)!important}
+.dial .glow-edge{opacity:.75}
+@media(max-width:720px){.back{background-position:60% center!important}.timerpanel .dial{width:min(91vw,470px)}}
+@media(orientation:landscape) and (max-height:600px){.back{background-position:center center!important}.timerpanel .dial{width:min(76vh,52vw,510px)}}
+
+/* B11: optically clear glass. No frosted backdrop, floral decoration, or reveal edge. */
+.dial .glow-edge,.dial .floral,#progress{display:none!important}
+.dial svg{filter:drop-shadow(0 0 3px #fff4)!important}
+.dial .shade{background:rgba(5,7,19,.70)!important}
+.dial svg #segments{filter:drop-shadow(0 0 2px #fff4)}
+.dial::after{content:"";position:absolute;inset:3.9%;border-radius:50%;pointer-events:none;z-index:3;border:1px solid rgba(255,255,255,.075);box-shadow:inset 0 1px 1px #ffffff0b}
+
+/* B11: individual clear glass arcs; no full-circumference white rings */
+.dial::after{display:none!important}
+.dial svg{filter:none!important;overflow:visible}
+.dial svg #segments{filter:drop-shadow(0 0 2px #ffffff24)!important}
+.dial .shade{background:rgba(5,7,19,.70)!important}
+/* B12: clear crystal with narrow polished edges, no frosted fill */
+.dial svg #segments{filter:drop-shadow(0 0 1.8px #ffffff22)!important}
+.dial svg{filter:none!important}
+.dial .shade{background:rgba(5,7,19,.70)!important}
+/* B18: clearer glass without crossbars; background remains optically sharp. */
+.dial svg #segments{filter:drop-shadow(0 0 2px #ffffff32)!important}
+.dial .shade{background:rgba(5,7,19,.70)!important}
+
+/* B19: unobstructed circle; compact glass controls in lower-right landscape. */
+@media (orientation:landscape) and (max-height:600px) {
+  main{padding:0!important;min-height:100dvh!important;overflow:hidden!important}
+  .layout{height:100dvh!important;width:100%!important;max-width:none!important;display:block!important}
+  .timerpanel{position:relative!important;height:100dvh!important;width:100%!important;padding:0!important;display:block!important;overflow:hidden!important}
+  .timerpanel>div:first-child{position:absolute!important;top:8px!important;left:12px!important;right:auto!important;width:calc(100% - 24px)!important;z-index:6!important}
+  .timerpanel .dial{position:absolute!important;left:clamp(8px,5vw,75px)!important;top:50%!important;transform:translateY(-50%)!important;margin:0!important;width:min(88dvh,58vw)!important;max-width:none!important}
+  .timerpanel .time{font-size:clamp(29px,11vh,72px)!important}
+  .timerpanel #status{position:absolute!important;top:36px!important;right:12px!important;left:auto!important;font-size:11px!important;z-index:5!important}
+  .timerpanel .controls{position:absolute!important;left:auto!important;right:12px!important;bottom:52px!important;top:auto!important;width:clamp(150px,28vw,240px)!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;padding:9px!important;border-radius:19px!important;background:rgba(22,15,34,.45)!important;border:1px solid rgba(255,255,255,.23)!important;backdrop-filter:blur(10px)!important;-webkit-backdrop-filter:blur(10px)!important;z-index:8!important;box-shadow:0 8px 30px #0005!important}
+  .timerpanel .controls button{min-width:0!important;min-height:39px!important;font-size:12px!important;padding:7px 5px!important;white-space:normal!important;line-height:1.15!important}
+  .timerpanel .controls #play{grid-column:1 / -1!important;grid-row:1!important;font-size:15px!important;background:#ffc48d!important;color:#241827!important}
+  .timerpanel .controls #prev{grid-column:1!important;grid-row:2!important}
+  .timerpanel .controls #next{grid-column:2!important;grid-row:2!important}
+  .timerpanel .controls #reset{grid-column:1 / -1!important;grid-row:3!important;min-height:32px!important}
+  .timerpanel .controls:last-child{display:block!important;bottom:9px!important;padding:5px!important;background:rgba(22,15,34,.35)!important}
+  .timerpanel .controls:last-child button{width:100%!important;min-height:29px!important;font-size:11px!important}
+  .focus .timerpanel .dial{width:min(88dvh,58vw)!important}
+}
+@media (orientation:landscape) and (max-height:420px) {
+  .timerpanel .controls{bottom:42px!important;padding:6px!important;gap:4px!important;width:clamp(150px,27vw,210px)!important}
+  .timerpanel .controls button{min-height:34px!important;padding:4px!important;font-size:11px!important}
+  .timerpanel .controls #reset{min-height:27px!important}
+  .timerpanel .controls:last-child{bottom:5px!important}
+  .timerpanel .controls:last-child button{min-height:25px!important}
+  .timerpanel .dial{left:clamp(4px,4vw,55px)!important;width:min(86dvh,57vw)!important}
+}
+
+/* B20: cinematic landscape, clear central ring, nearly invisible lower-right controls. */
+@media (orientation:landscape) and (max-height:600px) {
+ .timerpanel .dial, .focus .timerpanel .dial {
+   left:40%!important; top:50%!important;
+   transform:translate(-50%,-50%)!important;
+   width:min(84dvh,49vw,490px)!important;
+ }
+ .timerpanel .controls {
+   left:auto!important;right:max(10px,env(safe-area-inset-right))!important;
+   bottom:max(12px,env(safe-area-inset-bottom))!important;
+   top:auto!important;
+   width:min(43vw,390px)!important;
+   display:flex!important;flex-wrap:nowrap!important;align-items:center!important;
+   gap:5px!important;padding:0!important;
+   border:0!important;border-radius:0!important;
+   background:transparent!important;box-shadow:none!important;
+   backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+   z-index:8!important;
+ }
+ .timerpanel .controls button {
+   flex:1 1 0!important; min-width:0!important; min-height:38px!important;
+   padding:5px 3px!important;border-radius:15px!important;
+   background:rgba(17,16,29,.37)!important;
+   border:1px solid rgba(255,255,255,.16)!important;
+   color:rgba(255,255,255,.88)!important;
+   backdrop-filter:blur(3px)!important;-webkit-backdrop-filter:blur(3px)!important;
+   box-shadow:0 2px 8px #0002!important;
+   font-size:0!important;line-height:1!important;white-space:nowrap!important;
+ }
+ .timerpanel .controls button::after {font-size:19px!important;display:inline-block!important;line-height:1!important}
+ .timerpanel .controls #prev::after{content:'⏮'}
+ .timerpanel .controls #next::after{content:'⏭'}
+ .timerpanel .controls #reset::after{content:'↻'}
+ .timerpanel .controls #play {grid-column:auto!important;grid-row:auto!important;background:rgba(255,195,144,.31)!important;color:white!important}
+ .timerpanel .controls #play::after{content:'▶'}
+ .timerpanel .controls #play[data-running="true"]::after{content:'Ⅱ'}
+ .timerpanel .controls:last-child {
+   display:flex!important;right:max(10px,env(safe-area-inset-right))!important;
+   bottom:max(55px,calc(env(safe-area-inset-bottom) + 43px))!important;
+   width:48px!important;padding:0!important;
+ }
+ .timerpanel .controls:last-child button{min-height:30px!important;width:48px!important;flex:1!important;background:rgba(17,16,29,.24)!important}
+ .timerpanel .controls:last-child #finish::after{content:'⚑';font-size:16px!important}
+}
+@media (orientation:landscape) and (max-height:420px) {
+ .timerpanel .dial,.focus .timerpanel .dial{width:min(84dvh,49vw)!important}
+ .timerpanel .controls{width:min(42vw,360px)!important}
+ .timerpanel .controls button{min-height:34px!important}
+ .timerpanel .controls:last-child{bottom:max(51px,calc(env(safe-area-inset-bottom) + 39px))!important}
+}
+
+/* B21: larger centered dial; all five controls inside the viewport in one low-profile row. */
+@media (orientation:landscape) and (max-height:600px) {
+ .timerpanel .dial,.focus .timerpanel .dial {
+   left:38%!important;top:50%!important;
+   transform:translate(-50%,-50%)!important;
+   width:min(91dvh,56vw,550px)!important;
+ }
+ .timerpanel .controls:not(:last-child) {
+   position:absolute!important;
+   left:auto!important;right:calc(max(12px,env(safe-area-inset-right)) + 57px)!important;
+   bottom:max(11px,env(safe-area-inset-bottom))!important;
+   width:min(37vw,360px)!important;
+   display:flex!important;flex-wrap:nowrap!important;gap:5px!important;
+   padding:0!important;margin:0!important;background:transparent!important;
+   border:0!important;box-shadow:none!important;backdrop-filter:none!important;
+ }
+ .timerpanel .controls:not(:last-child) button {
+   min-width:0!important;flex:1 1 0!important;height:38px!important;min-height:38px!important;
+   padding:4px 2px!important;border-radius:13px!important;
+   background:rgba(18,15,26,.30)!important;color:white!important;
+   border:1px solid rgba(255,255,255,.18)!important;
+   font-size:0!important;backdrop-filter:blur(3px)!important;
+ }
+ .timerpanel .controls:not(:last-child) #play {background:rgba(255,196,141,.24)!important}
+ .timerpanel .controls:last-child {
+   display:block!important;position:absolute!important;
+   left:auto!important;right:max(12px,env(safe-area-inset-right))!important;
+   bottom:max(11px,env(safe-area-inset-bottom))!important;
+   width:52px!important;padding:0!important;margin:0!important;
+   background:transparent!important;border:0!important;box-shadow:none!important;
+ }
+ .timerpanel .controls:last-child #finish {
+   width:52px!important;height:38px!important;min-height:38px!important;
+   border-radius:13px!important;padding:0!important;
+   background:rgba(18,15,26,.30)!important;
+   border:1px solid rgba(255,255,255,.18)!important;
+   color:white!important;font-size:0!important;
+ }
+ .timerpanel .controls:last-child #finish::after{content:'⚑'!important;font-size:19px!important}
+ .timerpanel #status{right:12px!important;top:36px!important}
+}
+@media (orientation:landscape) and (max-height:420px) {
+ .timerpanel .dial,.focus .timerpanel .dial{width:min(91dvh,56vw)!important}
+ .timerpanel .controls:not(:last-child){width:min(37vw,360px)!important}
+}
+
+/* B22: balanced, low-contrast landscape controls. Keep B21 dial unchanged. */
+@media (orientation:landscape) and (max-height:600px) {
+ .timerpanel .controls:not(:last-child) {
+   position:absolute!important;top:auto!important;left:auto!important;
+   right:calc(max(16px, env(safe-area-inset-right)) + 48px)!important;
+   bottom:max(13px, env(safe-area-inset-bottom))!important;
+   width:min(29vw,310px)!important;
+   display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+   gap:5px!important;margin:0!important;padding:0!important;
+   background:none!important;border:0!important;box-shadow:none!important;
+   backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+   z-index:12!important;
+ }
+ .timerpanel .controls:not(:last-child) button,
+ .timerpanel .controls:last-child #finish {
+   display:flex!important;align-items:center!important;justify-content:center!important;
+   width:100%!important;min-width:0!important;height:36px!important;min-height:36px!important;
+   border-radius:12px!important;padding:0 2px!important;
+   background:rgba(18,16,28,.22)!important;
+   border:1px solid rgba(255,255,255,.23)!important;
+   color:rgba(255,255,255,.95)!important;
+   backdrop-filter:blur(2px)!important;-webkit-backdrop-filter:blur(2px)!important;
+   box-shadow:0 1px 5px rgba(0,0,0,.14)!important;
+   font-size:0!important;line-height:1!important;
+   opacity:1!important;visibility:visible!important;
+ }
+ .timerpanel .controls:not(:last-child) button:disabled {opacity:.48!important}
+ .timerpanel .controls:not(:last-child) #play {
+   grid-column:auto!important;grid-row:auto!important;
+   background:rgba(255,196,141,.17)!important;
+ }
+ .timerpanel .controls:not(:last-child) button::after,
+ .timerpanel .controls:last-child #finish::after {
+   display:block!important;font-size:17px!important;line-height:1!important;
+   color:rgba(255,255,255,.96)!important;
+ }
+ .timerpanel .controls:last-child {
+   display:block!important;position:absolute!important;top:auto!important;left:auto!important;
+   right:max(16px,env(safe-area-inset-right))!important;
+   bottom:max(13px,env(safe-area-inset-bottom))!important;
+   width:42px!important;height:36px!important;margin:0!important;padding:0!important;
+   background:none!important;border:0!important;box-shadow:none!important;
+   z-index:12!important;
+ }
+ .timerpanel .controls:last-child #finish::after {content:'⚑'!important;font-size:17px!important}
+}
+@media (orientation:landscape) and (max-height:420px) {
+ .timerpanel .controls:not(:last-child) {width:min(29vw,310px)!important}
+}
+
+/* B23: ONE physical transport container, five buttons, no wrap and no conflicting sibling positioning. */
+@media (orientation:landscape) and (max-height:600px) {
+ .timerpanel .controls.transport,
+ .timerpanel .controls.transport:last-child,
+ .timerpanel .controls.transport:not(:last-child) {
+   position:absolute!important;
+   display:flex!important;
+   flex-flow:row nowrap!important;
+   align-items:center!important;
+   justify-content:flex-end!important;
+   left:auto!important;
+   right:max(16px,env(safe-area-inset-right))!important;
+   top:auto!important;
+   bottom:max(12px,env(safe-area-inset-bottom))!important;
+   width:min(40vw,430px)!important;
+   height:38px!important;
+   padding:0!important;
+   margin:0!important;
+   gap:5px!important;
+   background:transparent!important;
+   border:0!important;
+   border-radius:0!important;
+   box-shadow:none!important;
+   backdrop-filter:none!important;
+   -webkit-backdrop-filter:none!important;
+   z-index:25!important;
+ }
+ .timerpanel .controls.transport button,
+ .timerpanel .controls.transport:last-child button,
+ .timerpanel .controls.transport #finish {
+   display:flex!important;
+   flex:1 1 0!important;
+   position:static!important;
+   align-items:center!important;
+   justify-content:center!important;
+   min-width:0!important;
+   width:auto!important;
+   max-width:none!important;
+   height:38px!important;
+   min-height:38px!important;
+   margin:0!important;
+   padding:0!important;
+   grid-column:auto!important;
+   grid-row:auto!important;
+   border-radius:11px!important;
+   background:rgba(18,16,28,.32)!important;
+   border:1px solid rgba(255,255,255,.25)!important;
+   box-shadow:none!important;
+   backdrop-filter:blur(3px)!important;
+   -webkit-backdrop-filter:blur(3px)!important;
+   color:white!important;
+   font-size:0!important;
+   white-space:nowrap!important;
+   line-height:1!important;
+   opacity:1!important;
+   visibility:visible!important;
+ }
+ .timerpanel .controls.transport #play{background:rgba(255,196,141,.23)!important}
+ .timerpanel .controls.transport button:disabled{opacity:.45!important}
+ .timerpanel .controls.transport button::after{
+   display:inline-block!important;
+   font-size:19px!important;
+   color:rgba(255,255,255,.96)!important;
+   line-height:1!important;
+ }
+ .timerpanel .controls.transport #prev::after{content:'⏮'!important}
+ .timerpanel .controls.transport #next::after{content:'⏭'!important}
+ .timerpanel .controls.transport #reset::after{content:'↻'!important}
+ .timerpanel .controls.transport #finish::after{content:'⚑'!important}
+ .timerpanel .controls.transport #play::after{content:'▶'!important}
+ .timerpanel .controls.transport #play[data-running="true"]::after{content:'Ⅱ'!important}
+}
+
+/* B24: slight left inset, clearer inactive icon, and one unambiguous play label. */
+@media (orientation:landscape) and (max-height:600px) {
+ .timerpanel .controls.transport {right:max(34px,calc(env(safe-area-inset-right) + 18px))!important;}
+ .timerpanel .controls.transport button:disabled {opacity:.72!important;}
+ .timerpanel .controls.transport #play {font-size:15px!important;font-weight:700!important;letter-spacing:0!important;white-space:nowrap!important;}
+ .timerpanel .controls.transport #play::before {content:'▶';display:inline-block;font-size:12px;margin-right:6px;}
+ .timerpanel .controls.transport #play[data-running="true"]::before {content:'Ⅱ';}
+ .timerpanel .controls.transport #play::after,
+ .timerpanel .controls.transport #play[data-running="true"]::after {content:none!important;display:none!important;}
+}
+
+/* B25: labeled transport buttons for previous and next, matching Play. */
+@media (orientation:landscape) and (max-height:600px) {
+ .timerpanel .controls.transport,
+ .timerpanel .controls.transport:last-child,
+ .timerpanel .controls.transport:not(:last-child) {
+   width:min(53vw,610px)!important;
+   right:max(28px,calc(env(safe-area-inset-right) + 16px))!important;
+   gap:6px!important;
+ }
+ .timerpanel .controls.transport #prev,
+ .timerpanel .controls.transport #next {
+   flex:1.35 1 0!important;
+   font-size:clamp(11px,1.2vw,15px)!important;
+   font-weight:650!important;
+   letter-spacing:-.02em!important;
+   padding:0 5px!important;
+   white-space:nowrap!important;
+ }
+ .timerpanel .controls.transport #play {flex:1.2 1 0!important;font-size:clamp(12px,1.2vw,15px)!important;}
+ .timerpanel .controls.transport #reset,
+ .timerpanel .controls.transport #finish {flex:.55 1 0!important;}
+ .timerpanel .controls.transport #prev::after,
+ .timerpanel .controls.transport #next::after {content:none!important;display:none!important;}
+ .timerpanel .controls.transport #prev::before,
+ .timerpanel .controls.transport #next::before {
+   display:inline-block!important;
+   font-size:clamp(12px,1.25vw,17px)!important;
+   margin-right:5px!important;
+   line-height:1!important;
+ }
+ .timerpanel .controls.transport #prev::before {content:'⏮'!important;}
+ .timerpanel .controls.transport #next::before {content:'⏭'!important;}
+}
+
+/* B26: text-only landscape controls, unified single row, clear of the dial. */
+@media (orientation:landscape) and (max-height:600px) {
+ .timerpanel .controls.transport,
+ .timerpanel .controls.transport:last-child,
+ .timerpanel .controls.transport:not(:last-child) {
+   width:min(47vw,690px)!important;
+   right:max(22px,calc(env(safe-area-inset-right) + 12px))!important;
+   gap:6px!important;
+   height:40px!important;
+ }
+ .timerpanel .controls.transport button {
+   font-size:clamp(11px,1.05vw,15px)!important;
+   font-weight:600!important;
+   letter-spacing:0!important;
+   white-space:nowrap!important;
+   min-height:40px!important;
+   height:40px!important;
+   padding:0 4px!important;
+   text-overflow:clip!important;
+ }
+ .timerpanel .controls.transport #prev,
+ .timerpanel .controls.transport #next {flex:1.35 1 0!important;}
+ .timerpanel .controls.transport #play {flex:1.1 1 0!important;}
+ .timerpanel .controls.transport #reset,
+ .timerpanel .controls.transport #finish {flex:1 1 0!important;font-size:0!important;}
+ .timerpanel .controls.transport button::before,
+ .timerpanel .controls.transport #play::before,
+ .timerpanel .controls.transport #play[data-running="true"]::before,
+ .timerpanel .controls.transport #prev::before,
+ .timerpanel .controls.transport #next::before {content:none!important;display:none!important;}
+ .timerpanel .controls.transport button::after,
+ .timerpanel .controls.transport #prev::after,
+ .timerpanel .controls.transport #next::after,
+ .timerpanel .controls.transport #play::after {content:none!important;display:none!important;}
+ .timerpanel .controls.transport #reset::after {content:'Återställ'!important;display:inline-block!important;font-size:clamp(11px,1.05vw,15px)!important;color:white!important;}
+ .timerpanel .controls.transport #finish::after {content:'Avsluta'!important;display:inline-block!important;font-size:clamp(11px,1.05vw,15px)!important;color:white!important;}
+ .timerpanel .controls.transport button:disabled {opacity:.62!important;}
+}
+
+/* B27: same quiet, text-only glass transport in portrait; two comfortable rows. */
+@media (orientation:portrait), (min-height:601px) {
+ .timerpanel .controls.transport {
+   position:relative!important;display:grid!important;
+   grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1.2fr)!important;
+   grid-template-rows:44px 42px!important;gap:8px!important;
+   width:min(100%,490px)!important;margin:12px auto 0!important;
+   padding:0!important;background:transparent!important;border:0!important;
+   box-shadow:none!important;backdrop-filter:none!important;
+ }
+ .timerpanel .controls.transport button {
+   position:static!important;display:flex!important;align-items:center!important;justify-content:center!important;
+   min-width:0!important;width:100%!important;height:100%!important;min-height:0!important;
+   padding:6px 5px!important;border-radius:13px!important;
+   background:rgba(20,17,31,.32)!important;border:1px solid rgba(255,255,255,.29)!important;
+   color:#fff!important;box-shadow:0 3px 12px rgba(0,0,0,.12)!important;
+   backdrop-filter:blur(4px)!important;-webkit-backdrop-filter:blur(4px)!important;
+   font-size:clamp(12px,3.5vw,15px)!important;font-weight:600!important;
+   line-height:1.1!important;white-space:nowrap!important;
+ }
+ .timerpanel .controls.transport #play {grid-column:2!important;grid-row:1!important;background:rgba(255,196,141,.23)!important}
+ .timerpanel .controls.transport #prev {grid-column:1!important;grid-row:1!important}
+ .timerpanel .controls.transport #next {grid-column:3!important;grid-row:1!important}
+ .timerpanel .controls.transport #reset {grid-column:1 / 3!important;grid-row:2!important}
+ .timerpanel .controls.transport #finish {grid-column:3!important;grid-row:2!important}
+ .timerpanel .controls.transport button:disabled {opacity:.48!important}
+ .timerpanel .controls.transport button::before,.timerpanel .controls.transport button::after {content:none!important;display:none!important}
+}
+
+/* B28: preserve dial position; shift landscape buttons clear of the ring. */
+@media (orientation:landscape) and (max-height:600px) {
+ .timerpanel .controls.transport,
+ .timerpanel .controls.transport:last-child,
+ .timerpanel .controls.transport:not(:last-child) {
+   width:min(42vw,650px)!important;
+   right:max(18px,calc(env(safe-area-inset-right) + 12px))!important;
+   gap:5px!important;
+ }
+ .timerpanel .controls.transport button {
+   font-size:clamp(10px,1.02vw,15px)!important;
+   padding:0 3px!important;
+ }
+ .timerpanel .controls.transport #prev,
+ .timerpanel .controls.transport #next {flex:1.35 1 0!important;}
+ .timerpanel .controls.transport #play {flex:1.05 1 0!important;}
+ .timerpanel .controls.transport #reset,
+ .timerpanel .controls.transport #finish {flex:.92 1 0!important;}
+ .timerpanel .controls.transport button:disabled {
+   opacity:.79!important;
+   color:rgba(255,255,255,.84)!important;
+   border-color:rgba(255,255,255,.20)!important;
+ }
+}
+
+/* B29: coordinated, compact two-row portrait glass transport. */
+@media (orientation:portrait), (min-height:601px) {
+ .timerpanel .controls.transport {
+   grid-template-columns:repeat(6,minmax(0,1fr))!important;
+   grid-template-rows:40px 40px!important;
+   gap:6px!important;
+   width:min(100%,490px)!important;
+   margin:10px auto 0!important;
+ }
+ .timerpanel .controls.transport button {
+   border-radius:12px!important;
+   padding:5px 4px!important;
+   font-size:clamp(12px,3.25vw,14px)!important;
+   font-weight:600!important;
+   letter-spacing:-.015em!important;
+   background:rgba(21,17,29,.27)!important;
+   border:1px solid rgba(255,255,255,.25)!important;
+   box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 3px 9px rgba(0,0,0,.13)!important;
+   backdrop-filter:blur(5px)!important;
+   -webkit-backdrop-filter:blur(5px)!important;
+ }
+ .timerpanel .controls.transport #prev{grid-column:1 / 3!important;grid-row:1!important}
+ .timerpanel .controls.transport #play{grid-column:3 / 5!important;grid-row:1!important;background:rgba(255,196,141,.24)!important}
+ .timerpanel .controls.transport #next{grid-column:5 / 7!important;grid-row:1!important}
+ .timerpanel .controls.transport #reset{grid-column:1 / 4!important;grid-row:2!important}
+ .timerpanel .controls.transport #finish{grid-column:4 / 7!important;grid-row:2!important}
+ .timerpanel .controls.transport button:disabled{opacity:.58!important;color:rgba(255,255,255,.80)!important}
+}
+
+.profileBox{padding:12px;margin:0 0 15px;border:1px solid #ffffff35;border-radius:17px;background:#191523b8;display:grid;gap:9px}
+.profileBox label,.endSettings label{font-size:13px;color:#f4e6dc}
+.profileBox select,.profileBox input,.endSettings input,.endSettings select,.endSettings textarea{width:100%;padding:10px;border-radius:10px;background:#231e30;color:#fff;border:1px solid #ffffff55;font:inherit}
+.profileActions{display:flex;flex-wrap:wrap;gap:6px}.profileActions button{font-size:12px;padding:9px 11px}
+.endSettings{margin-top:12px;border:1px solid #ffffff35;border-radius:14px;padding:12px;background:#1c1624a8;display:grid;gap:10px}
+.endSettings .field{display:grid;gap:4px}.endSettings textarea{min-height:62px;resize:vertical}
+.endSettings .controls{display:flex;flex-wrap:wrap}.endSettings button{font-size:13px}
+.endOverlay{position:fixed;z-index:25;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;text-align:center;padding:22px;background:radial-gradient(ellipse at center,#0d092055,transparent 70%)}
+.endOverlay.hidden{display:none}.endCard{max-width:90vw;padding:25px 30px;border-radius:22px;background:#1b1525bb;border:1px solid #ffffff77;box-shadow:0 0 45px #ffc58d55;backdrop-filter:blur(5px)}
+.endMessage{font-size:clamp(25px,5vw,58px);font-weight:700;white-space:pre-wrap;text-shadow:0 3px 14px #000}.endOverlay.glow .endMessage{animation:softGlow 2s ease-in-out infinite alternate}.endOverlay.stars .endCard{box-shadow:0 0 30px #d3c6ff,0 0 80px #a8d8ff55}.endOverlay.fade .endCard{animation:fadeUp 1.2s ease-out}
+@keyframes softGlow{to{text-shadow:0 0 24px #ffe2a7,0 0 48px #fff6e3}}@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.endPreviewClose{pointer-events:auto;margin-top:16px;padding:9px 18px}
+@media (max-width:800px){.profileBox{padding:10px}.endSettings{padding:10px}}
+
+/* B31 settings and ending */
+.settingsPanel{background:#171321ec;border:1px solid #ffffff70;border-radius:16px;padding:14px;margin-bottom:14px;display:grid;gap:10px}.settingsPanel h3{margin:0}.settingsPanel label{font-size:13px;display:grid;gap:5px}.settingsPanel label:has(input[type=checkbox]){display:flex;align-items:center}.settingsPanel input[type=checkbox]{width:auto}.settingsPanel input[type=range]{width:100%;accent-color:#f2b9d5;padding:0}.settingsPanel select{width:100%;padding:9px;border-radius:9px;background:#272034;color:#fff}.settingsPanel output{float:right}.settingsPanel hr{width:100%;border:0;border-top:1px solid #ffffff38}.dial svg{opacity:var(--glass-opacity,1);filter:drop-shadow(0 0 7px rgba(255,255,255,var(--ring-glow,.7)))}.dial .shade{background:rgba(5,7,17,var(--center-dark,.77))!important}.endOverlay{z-index:8;background:transparent;align-items:center;justify-content:center}.endCard{background:transparent;border:0;box-shadow:none;backdrop-filter:none;padding:0;max-width:min(65vw,390px);pointer-events:auto}.endMessage{font-size:clamp(19px,3.4vw,35px);line-height:1.18;text-wrap:balance;text-shadow:0 2px 5px #000,0 0 13px #000,0 0 24px #000}.endOverlay.stars .endCard{box-shadow:none}.endPreviewClose{margin-top:16px}.fire{z-index:12}
+@media(orientation:landscape) and (max-height:600px){.endCard{max-width:35vw}.endMessage{font-size:clamp(16px,2.7vw,28px)}}
+
+/* B32 display modes and independent visual controls */
+.dial svg{opacity:1!important;filter:none!important}
+.dial .shade{opacity:var(--shade-visibility,1)}
+.dial.mode-ring .numbers,.dial.mode-photo .numbers{display:none!important}
+.dial.mode-digital svg,.dial.mode-photo svg{display:none!important}
+.dial.mode-digital .shade,.dial.mode-photo .shade{display:none!important}
+.dial.mode-digital::before,.dial.mode-photo::before{display:none!important}
+.dial.mode-digital,.dial.mode-photo{border-radius:0}
+.dial.mode-digital .numbers{display:flex!important}
+.dial.mode-digital .time{font-size:clamp(56px,12vw,108px)}
+.dial.mode-digital #percent{display:none}
+.dial.mode-digital #subtitle{font-size:clamp(13px,2vw,20px)}
+.dial.mode-photo{pointer-events:none}
+.dial.mode-photo .glow-edge,.dial.mode-photo .floral{display:none!important}
+.dial.mode-ring .shade{display:none!important}
+.dial.mode-ring::before{display:none!important}
+
+.previewWrap{position:relative;overflow:hidden;border-radius:18px;margin:12px 0 20px;padding:10px;text-align:center;background:linear-gradient(#1a152a55,#1a152a55),url("pianorum.jpg") center/cover;min-height:280px;border:1px solid #ffffff66}
+.previewLabel,.previewNote{position:relative;z-index:2;text-shadow:0 1px 4px #000;font-size:13px}.previewRing{height:230px;display:flex;justify-content:center;align-items:center}.previewRing svg{width:225px;height:225px;overflow:visible;filter:none!important;opacity:1!important}.previewNote{font-size:11px}
+.backupBox{display:grid;gap:7px;padding:12px 0 0;border-top:1px solid #ffffff35}.backupBox p{margin:0}.backupBox button{flex:1;min-width:115px}.backupBox #backupStatus{color:#f7d5b4}
+.importDialog{border:1px solid #ffffff55;border-radius:20px;background:#1d1927;color:#fff;max-width:min(440px,calc(100vw - 28px));width:100%;padding:22px;box-shadow:0 18px 60px #000a}.importDialog::backdrop{background:#0009;backdrop-filter:blur(5px)}.importDialog h3{margin:0 0 10px}.importDialog p{line-height:1.5;color:#e5deec}.importChoices{display:grid;gap:10px;margin-top:18px}.importChoices button{text-align:left;padding:13px 16px;white-space:normal}.importChoices small{display:block;opacity:.8;font-size:12px;margin-top:4px}.importChoices .cancelImport{background:transparent}
+
+/* B34.2 – hide/show sidebar on landscape iPad, visible by default. */
+#ipadMenuToggle{display:none}
+@media (orientation:landscape) and (min-width:900px) and (min-height:601px){
+ #ipadMenuToggle{display:block;position:fixed;top:calc(env(safe-area-inset-top, 0px) + 36px);left:18px;z-index:30;background:rgba(22,18,34,.66);border:1px solid #ffffff65;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:9px 13px;font-size:13px;box-shadow:0 3px 14px #0005}
+ #app.ipad-menu-hidden .sidebar{display:none!important}
+ #app.ipad-menu-hidden .layout{grid-template-columns:minmax(0,1fr)!important;max-width:1150px!important}
+ #app.ipad-menu-hidden .timerpanel{width:100%!important}
+ #app.ipad-menu-hidden .timerpanel .dial{width:min(72vh,630px)!important}
+}
+
+/* B34.4: size control, keeping the original at 100%. */
+@media (orientation:landscape) and (min-width:900px) and (min-height:601px){
+ .timerpanel .dial,.focus .timerpanel .dial{width:min(calc(91dvh * var(--ring-size-factor,1)),calc(56vw * var(--ring-size-factor,1)),calc(550px * var(--ring-size-factor,1)))!important;max-width:none!important;max-height:none!important}
+ #app.ipad-menu-hidden .timerpanel .dial{width:min(calc(72vh * var(--ring-size-factor,1)),calc(630px * var(--ring-size-factor,1)))!important}
+}
+@media (orientation:portrait){
+ .timerpanel .dial,.focus .timerpanel .dial{width:min(calc(69vw * var(--ring-size-factor,1)),calc(660px * var(--ring-size-factor,1)))!important}
+}
+@media (orientation:portrait) and (max-width:720px){
+ .timerpanel .dial,.focus .timerpanel .dial{width:min(calc(91vw * var(--ring-size-factor,1)),calc(470px * var(--ring-size-factor,1)))!important;max-width:none!important;max-height:none!important}
+}
+@media (orientation:landscape) and (max-height:600px){
+ .timerpanel .dial,.focus .timerpanel .dial{width:min(calc(76vh * var(--ring-size-factor,1)),calc(52vw * var(--ring-size-factor,1)),calc(510px * var(--ring-size-factor,1)))!important}
+}
+
+/* B34.5: keep the timer stable while the settings sidebar grows. */
+@media (orientation:landscape) and (min-width:900px) and (min-height:601px){
+ #app:not(.focus) .layout{height:calc(100dvh - 32px)!important;min-height:0!important;align-items:center!important}
+ #app:not(.focus) .sidebar{max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain;align-self:center;scrollbar-width:thin}
+ #app:not(.focus) .timerpanel{align-self:center!important;min-height:0!important}
+ #app:not(.focus) .sidebar>.header{padding-top:42px}
+ #ipadMenuToggle{top:calc(env(safe-area-inset-top, 0px) + 36px);left:18px}
+}
+
+/* B35.0: dark circular countdown without numbers; retains the same reveal mask. */
+.dial.mode-center-only svg{display:none!important}
+.dial.mode-center-only .numbers{display:none!important}
+.dial.mode-center-only .shade{display:block!important;inset:7%!important;background:var(--center-color,#050711)!important;opacity:var(--center-opacity,.77)!important}
+.dial.mode-center-only::after{display:none!important}
+
+/* B34.6: middle-only reveal, color controls, large digits, persistent transport */
+.dial.mode-center-time svg{display:none!important}
+.dial.mode-center-time .shade{display:block!important}
+.dial.mode-center-time .shade{inset:7%!important;background:var(--center-color,#050711)!important;opacity:var(--center-opacity,.77)!important}
+.dial.mode-center-time::after{content:"";position:absolute;inset:7%;border-radius:50%;border:1px solid rgba(255,255,255,.6);pointer-events:none;z-index:2}
+.dial .timePlate{max-width:96%;display:flex;justify-content:center;align-items:center;border-radius:20px;padding:0 9px;isolation:isolate;position:relative}
+.dial .timePlate.enabled::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--plate-color,#f0c8d8);opacity:var(--plate-opacity,.85);z-index:-1}
+.dial .timePlate.enabled{background:transparent!important;padding:8px 14px}
+.dial .time{white-space:nowrap;line-height:1.12;max-width:none}
+.dial.mode-digital .timePlate{max-width:none}
+.dial.mode-digital .numbers{overflow:visible}
+@media (orientation:landscape) and (min-width:800px){
+ .timerpanel{min-height:0;position:relative}
+ .timerpanel .controls.transport{position:fixed!important;bottom:max(10px,env(safe-area-inset-bottom))!important;left:50%!important;right:auto!important;transform:translateX(-50%);z-index:15!important;width:min(96vw,650px)!important;display:flex!important;flex-wrap:nowrap!important;gap:7px!important}
+ .timerpanel .controls.transport button{min-width:0;flex:1;white-space:nowrap;padding:9px 7px!important;font-size:clamp(11px,1.1vw,15px)!important}
+}
+
+/* B35.0: one composition editor, independent layers */
+.appearanceToggles{display:grid;gap:9px;background:#ffffff0b;border:1px solid #ffffff32;border-radius:12px;padding:12px}
+.appearanceToggles label{display:flex!important;align-items:center;gap:9px;font-size:14px}
+.appearanceToggles input{width:auto!important;accent-color:#e9a9cc}
+.dial.compose-no-glass svg{display:none!important}
+.dial.compose-no-center .shade,.dial.compose-no-center::before{display:none!important}
+.dial.compose-no-digits .numbers{display:none!important}
+.dial.compose-has-center .shade{display:block!important;background:var(--center-color,#050711)!important;opacity:var(--center-opacity,.77)!important}
+.dial.compose-has-center::before{display:none!important}
+.dial.compose-no-glass.compose-has-center .shade{inset:7%!important}
+.dial.compose-no-glass.compose-no-center{pointer-events:none}
+.dial.compose-no-glass.compose-no-center .glow-edge,.dial.compose-no-glass.compose-no-center .floral{display:none!important}
+.appearanceRow{display:flex;align-items:center;justify-content:space-between;gap:8px}.appearanceRow label{flex:1;margin:0!important}.appearanceInfo{width:36px;min-width:36px;height:34px;border-radius:50%;padding:0!important;font-size:22px;line-height:1;background:#ffffff12;border:1px solid #ffffff60;color:#f8e5f2}.appearanceInfo[aria-expanded="true"]{background:#e9a9cc44;border-color:#f4bddd}.appearanceSection{padding:13px 10px 16px;margin:12px 0;border:1px solid #ffffff36;background:#ffffff0a;border-radius:13px}.appearanceSection[hidden]{display:none!important}.appearanceSection h4{margin:0 0 12px;font-size:15px}
+/* B35.1: customizable moment label and transport */
+.timerpanel{position:relative}.timerpanel #focus{position:fixed!important;top:18px!important;right:18px!important;left:auto!important;bottom:auto!important;transform:none!important;z-index:70!important;width:auto!important;max-width:none!important}
+.dial .momentFloating{position:absolute;z-index:6;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;text-shadow:0 2px 9px #000}
+.dial .pos-top{top:calc(0% - var(--moment-distance))}.dial .pos-bottom{top:calc(100% + var(--moment-distance))}.dial .pos-right{left:calc(100% + var(--moment-distance));top:50%}.dial .pos-top-right{left:calc(85% + var(--moment-distance));top:calc(15% - var(--moment-distance))}.dial .pos-bottom-right{left:calc(85% + var(--moment-distance));top:calc(85% + var(--moment-distance))}.dial .pos-top-left{left:calc(15% - var(--moment-distance));top:calc(15% - var(--moment-distance))}.dial .pos-bottom-left{left:calc(15% - var(--moment-distance));top:calc(85% + var(--moment-distance))}.dial .pos-inside-above{top:34%}.dial .pos-inside-below{top:68%}.dial .pos-inside-instead{top:50%}
+.dial #momentArcSvg{position:absolute!important;inset:0;width:100%;height:100%;z-index:6;transform:none!important;filter:none!important;overflow:visible;pointer-events:none}.dial.moment-instead .timePlate,.dial.moment-instead #subtitle{visibility:hidden}
+.timerpanel .transport.transport-top{position:relative;order:-1}.timerpanel .transport.transport-fixed{position:fixed!important;bottom:12px;left:50%;transform:translateX(-50%);z-index:65;width:min(94vw,700px);background:#12121ba8;padding:7px;border-radius:14px}.timerpanel .transport.transport-one{flex-wrap:nowrap!important}.timerpanel .transport.transport-two{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));max-width:600px;margin-left:auto;margin-right:auto}.timerpanel .transport.transport-two button{min-width:0}
+.buttonVisibility{display:grid;grid-template-columns:1fr 1fr;gap:7px}.buttonVisibility label{font-size:13px}.buttonVisibility input{width:auto}
+</style><style>
+/* B35.2 – separate ring SVG from moment-label SVG. */
+#ipadMenuToggle{display:none!important}
+.dial #glassRingSvg{position:absolute;inset:0;width:100%;height:100%;z-index:3;transform:rotate(-90deg);pointer-events:none}
+.dial:not(.compose-no-glass) #glassRingSvg{display:block!important;visibility:visible!important;opacity:1!important}
+.dial.compose-no-glass #glassRingSvg{display:none!important}
+.dial #momentArcSvg{z-index:7}
+.dial .momentFloating{z-index:8}
+</style><style>
+/* B35.3: glass ring visibility controlled only by the glass checkbox */
+.dial:not(.compose-no-glass) #glassRingSvg{display:block!important;visibility:visible!important;opacity:1!important;z-index:9!important}
+.dial.compose-no-glass #glassRingSvg{display:none!important}
+.dial #momentArcSvg{z-index:11!important}
+.dial .numbers{z-index:12!important}
+.dial .momentFloating{z-index:13!important}
+</style><style id="b354-fixes">
+/* B35.4: beat old !important transport declarations in landscape */
+.timerpanel .controls.transport{display:flex!important;position:fixed!important;left:50%!important;right:auto!important;bottom:12px!important;top:auto!important;transform:translateX(-50%)!important;width:min(94vw,680px)!important;height:auto!important;max-width:94vw!important;gap:7px!important;align-items:center!important;justify-content:center!important;z-index:45!important;flex-flow:row wrap!important}
+.timerpanel .controls.transport.transport-top{top:calc(50% - min(32vw,290px) - 75px)!important;bottom:auto!important}
+.timerpanel .controls.transport.transport-fixed{bottom:12px!important;top:auto!important}
+.timerpanel .controls.transport.transport-one{flex-flow:row nowrap!important}
+.timerpanel .controls.transport.transport-two{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.timerpanel .controls.transport button{position:static!important;flex:1 1 0!important;min-width:0!important;width:auto!important;max-width:none!important;height:auto!important;line-height:1.2!important;white-space:normal!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.timerpanel .controls.transport #play{background-color:var(--transport-bg,#40354fbf)!important;color:var(--transport-fg,#fff)!important;font-size:var(--transport-text-size,14px)!important}
+.timerpanel .controls.transport button{background-color:var(--transport-bg,#40354fbf)!important;color:var(--transport-fg,#fff)!important;border-color:var(--transport-border,#fff)!important;border-radius:var(--transport-radius,13px)!important;font-family:var(--transport-font,system-ui)!important;font-size:var(--transport-text-size,14px)!important;padding:var(--transport-padding,9px 11px)!important}
+.timerpanel .controls.transport #play{outline:1px solid var(--transport-border,#fff);outline-offset:-2px}
+.timerpanel .controls.transport button.transport-hidden{display:none!important}
+.timerpanel .controls.transport.transport-hidden{display:none!important}
+/* Restore ring graphics: keep ring over circle, and preview has independent SVG visibility. */
+.dial #glassRingSvg{z-index:10!important;display:block!important;opacity:1!important;visibility:visible!important;overflow:visible!important}
+.dial.compose-no-glass #glassRingSvg{display:none!important}
+.previewRing svg{display:block!important;opacity:1!important;visibility:visible!important;overflow:visible!important;width:100%!important;height:100%!important}
+</style><style id="b355-canvas">
+/* Independent glass layer: unaffected by legacy mode-specific SVG hiding. */
+.dial #glassRingCanvas{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:10!important;pointer-events:none!important;display:block!important;opacity:1!important;visibility:visible!important}
+.dial.compose-no-glass #glassRingCanvas{display:none!important}
+.dial #glassRingSvg{display:none!important}
+.previewRing #glassPreviewCanvas{display:block;width:100%;height:100%;max-width:100%;object-fit:contain}
+</style><style id="b356-ring-fix">
+/* SVG rings use independent layers and override legacy display modes. */
+.dial #glassFixedSvg{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;width:100%!important;height:100%!important;display:block!important;visibility:visible!important;opacity:1!important;z-index:11!important;pointer-events:none!important;transform:none!important;filter:none!important;overflow:visible!important}
+.dial.compose-no-glass #glassFixedSvg{display:none!important}
+#glassRingCanvas,#glassRingSvg{display:none!important}
+.previewRing #glassPreviewFixedSvg{display:block!important;width:100%!important;height:100%!important;opacity:1!important;visibility:visible!important;filter:none!important;overflow:visible!important}
+</style><style id="b3511-ring-size">
+.dial #glassFixedSvg{width:100%!important;height:100%!important;min-width:100%!important;min-height:100%!important;aspect-ratio:1/1!important;}
+.previewRing #glassPreviewFixedSvg{width:100%!important;height:100%!important;aspect-ratio:1/1!important;}
+</style><style id="b358-fit">
+/* Only the inner fill changes its diameter; the independently drawn ring is untouched. */
+.dial.compose-has-center .shade{inset:var(--center-ring-inset,9.375%)!important}
+.dial.mode-center-only .shade,.dial.mode-center-time .shade{inset:var(--center-ring-inset,9.375%)!important}
+</style><style id="b3512-single-ring-layer">
+/* Old canvas used a more specific !important rule and remained visible.
+   Hide it definitively; only the settings-driven SVG draws the ring. */
+.dial #glassRingCanvas,.dial #glassRingSvg{display:none!important;visibility:hidden!important;opacity:0!important}
+.previewRing #glassPreviewCanvas{display:none!important;visibility:hidden!important}
+.dial:not(.compose-no-glass) #glassFixedSvg{display:block!important;visibility:visible!important}
+.previewRing #glassPreviewFixedSvg{display:block!important;visibility:visible!important}
+</style><style id="b3514-authoritative-ring">
+.dial #glassFixedSvg{display:block!important;position:absolute!important;inset:0!important;z-index:11!important;transform:none!important;opacity:1!important;filter:none!important;pointer-events:none!important}
+.dial.compose-no-glass #glassFixedSvg{display:none!important}
+.dial #glassRingSvg,.dial #glassRingCanvas{display:none!important}
+</style></head><body><main id="app"><div class="back" id="back"></div><div class="layout"><aside class="panel sidebar" id="sidebarMenu"><div class="header">🎹 Pianolektion <span style="font-size:11px;opacity:.65;font-weight:400">B35.14</span> <button id="settingsToggle" title="Inställningar" aria-label="Inställningar" style="float:right;padding:5px 9px">⚙️</button></div><div id="settingsPanel" class="settingsPanel hidden"><h3>⚙️ Inställningar</h3><strong>🎨 Bygg din egen timer</strong><p class="small">Välj vilka delar som ska synas. Tryck på ⓘ för att anpassa varje del. Dina val sparas för varje elev.</p><select id="displayMode" hidden aria-hidden="true"><option value="ring-time">Glasring + digital tid</option><option value="ring">Endast glasring</option><option value="center-time">Mörk cirkel + digital tid</option><option value="center-only">Endast mörk cirkel</option><option value="digital">Endast digital tid</option><option value="photo">Endast bakgrundsbild</option><option value="custom">Egen kombination</option></select><div class="appearanceToggles"><div class="appearanceRow"><label><input type="checkbox" id="showGlass"> 🌈 Visa yttre ring</label><button class="appearanceInfo" type="button" data-section="glassOptions" aria-controls="glassOptions" aria-expanded="false" aria-label="Inställningar för glasringen">ⓘ</button></div><div class="appearanceRow"><label><input type="checkbox" id="showCenter"> 🌑 Visa inre cirkel</label><button class="appearanceInfo" type="button" data-section="centerOptions" aria-controls="centerOptions" aria-expanded="false" aria-label="Inställningar för mörka cirkeln">ⓘ</button></div><div class="appearanceRow"><label><input type="checkbox" id="showDigits"> 🔢 Visa siffror</label><button class="appearanceInfo" type="button" data-section="digitsOptions" aria-controls="digitsOptions" aria-expanded="false" aria-label="Inställningar för siffrorna">ⓘ</button></div><div class="appearanceRow"><label><input type="checkbox" id="showMoment" checked> 📝 Visa momentnamn</label><button class="appearanceInfo" type="button" data-section="momentOptions" aria-controls="momentOptions" aria-expanded="false">ⓘ</button></div><div class="appearanceRow"><label><input type="checkbox" id="showSubtitle" checked> 🕒 Visa ”Tid kvar”</label><button class="appearanceInfo" type="button" data-section="subtitleOptions" aria-controls="subtitleOptions" aria-expanded="false">ⓘ</button></div><div class="appearanceRow"><label><input type="checkbox" id="showPercent" checked> 📊 Visa ”% avslöjat”</label><button class="appearanceInfo" type="button" data-section="percentOptions" aria-controls="percentOptions" aria-expanded="false">ⓘ</button></div><div class="appearanceRow"><label><input type="checkbox" id="showStatus" checked> 📍 Visa ”Moment 1 av 5”</label><button class="appearanceInfo" type="button" data-section="statusOptions" aria-controls="statusOptions" aria-expanded="false" aria-label="Inställningar för momentindikatorn">ⓘ</button></div><div class="appearanceRow"><label><input type="checkbox" id="showTransport" checked> 🎛️ Visa timerknappar</label><button class="appearanceInfo" type="button" data-section="transportOptions" aria-controls="transportOptions" aria-expanded="false">ⓘ</button></div></div><p class="small">Alla delar kan kombineras fritt. Timern och ljudet fortsätter även om du döljer dem.</p><div class="appearanceShared"><strong>📐 Gemensam storlek</strong><label>Cirkelns och yttre ringens storlek <output id="ringSizeValue">100%</output><input type="range" id="ringSizeRange" min="70" max="200" step="5" value="100"></label><p class="small">100% är grundstorleken. Förhandsvisningen nedan har fast storlek.</p></div><div id="momentOptions" class="appearanceSection" hidden><h4>📝 Momentnamnets inställningar</h4><label>Placering<select id="momentPosition"><option value="outside">Utanför – vänster (ursprunglig)</option><option value="top">Utanför – ovanför</option><option value="right">Utanför – höger</option><option value="bottom">Utanför – nedanför</option><option value="top-left">Utanför – övre vänster</option><option value="top-right">Utanför – övre höger</option><option value="bottom-left">Utanför – nedre vänster</option><option value="bottom-right">Utanför – nedre höger</option><option value="arc-top">Böjd text – övre bågen</option><option value="arc-bottom">Böjd text – nedre bågen</option><option value="inside-above">Inuti – ovanför siffrorna</option><option value="inside-below">Inuti – under siffrorna</option><option value="inside-instead">Inuti – istället för siffrorna</option></select></label><label>Typsnitt<select id="momentFont"><option value="modern">Modern</option><option value="elegant">Klassisk</option><option value="digital">Digital</option><option value="thin">Tunn</option><option value="italic">Kursiv</option></select></label><label>Storlek <output id="momentSizeValue">100%</output><input type="range" id="momentSize" min="50" max="500" step="5" value="100"></label><label>Textfärg <input type="color" id="momentColor" value="#ffffff"></label><label>Avstånd från cirkeln <output id="momentDistanceValue">12px</output><input type="range" id="momentDistance" min="0" max="65" value="12"></label></div><div id="subtitleOptions" class="appearanceSection" hidden><h4>Tid kvar – inställningar</h4><label>Typsnitt<select id="subtitleFont"><option value="modern">Modern</option><option value="elegant">Klassisk</option><option value="digital">Digital</option><option value="italic">Kursiv</option><option value="thin">Tunn</option></select></label><label>Storlek <output id="subtitleSizeValue">100%</output><input type="range" id="subtitleSize" min="50" max="400" step="5" value="100"></label><label>Textfärg <input type="color" id="subtitleColor" value="#ffffff"></label><label>Placering<select id="subtitlePosition"><option value="normal">Standard</option><option value="up">Högre upp</option><option value="down">Längre ner</option></select></label></div><div id="percentOptions" class="appearanceSection" hidden><h4>% avslöjat – inställningar</h4><label>Typsnitt<select id="percentFont"><option value="modern">Modern</option><option value="elegant">Klassisk</option><option value="digital">Digital</option><option value="italic">Kursiv</option><option value="thin">Tunn</option></select></label><label>Storlek <output id="percentSizeValue">100%</output><input type="range" id="percentSize" min="50" max="400" step="5" value="100"></label><label>Textfärg <input type="color" id="percentColor" value="#ffffff"></label><label>Placering<select id="percentPosition"><option value="normal">Standard</option><option value="up">Högre upp</option><option value="down">Längre ner</option></select></label></div><div id="statusOptions" class="appearanceSection" hidden><h4>📍 Momentindikatorns inställningar</h4><label>Placering<select id="statusPosition"><option value="bottom">Under cirkeln (fast)</option><option value="top">Ovanför cirkeln (fast)</option><option value="left">Vänster på skärmen</option><option value="right">Höger på skärmen</option></select></label><label>Typsnitt<select id="statusFont"><option value="modern">Modern</option><option value="elegant">Klassisk</option><option value="digital">Digital</option><option value="thin">Tunn</option><option value="italic">Kursiv</option></select></label><label>Storlek <output id="statusSizeValue">100%</output><input type="range" id="statusSize" min="50" max="400" step="5" value="100"></label><label>Textfärg <input type="color" id="statusColor" value="#ffffff"></label><p class="small">Indikatorns placering är oberoende av ringens storlek.</p></div><div id="transportOptions" class="appearanceSection" hidden><h4>🎛️ Timerknapparnas inställningar</h4><label>Placering<select id="transportPosition"><option value="bottom">Nedanför cirkeln</option><option value="top">Ovanför cirkeln</option><option value="fixed">Fast längs skärmens nederkant</option></select></label><label>Rader<select id="transportRows"><option value="auto">Automatiskt</option><option value="one">En rad</option><option value="two">Två rader</option></select></label><label>Form<select id="transportShape"><option value="rounded">Mjukt rundad</option><option value="pill">Oval</option><option value="square">Rektangulär</option></select></label><label>Storlek <output id="transportSizeValue">100%</output><input type="range" id="transportSize" min="70" max="150" value="100"></label><label>Genomskinlighet <output id="transportOpacityValue">75%</output><input type="range" id="transportOpacity" min="10" max="100" value="75"></label><label>Knappfärg <input type="color" id="transportColor" value="#40354f"></label><label>Textfärg <input type="color" id="transportTextColor" value="#ffffff"></label><label>Konturfärg <input type="color" id="transportBorderColor" value="#ffffff"></label><label>Typsnitt<select id="transportFont"><option value="modern">Modern</option><option value="elegant">Klassisk</option><option value="digital">Digital</option><option value="italic">Kursiv</option></select></label><label>Textstorlek <output id="transportTextSizeValue">100%</output><input type="range" id="transportTextSize" min="70" max="160" value="100"></label><strong>Visa knappar</strong><div class="buttonVisibility"><label><input type="checkbox" id="showPrev" checked> Föregående</label><label><input type="checkbox" id="showPlay" checked> Starta/Pausa</label><label><input type="checkbox" id="showNext" checked> Nästa</label><label><input type="checkbox" id="showReset" checked> Återställ</label><label><input type="checkbox" id="showFinish" checked> Avsluta</label></div><p class="small">Alla knappar får samma grundutseende. Starta/Pausa är markerad för att vara lätt att hitta.</p></div><div id="glassOptions" class="appearanceSection" hidden><h4>🌈 Yttre ringens inställningar</h4><div class="previewWrap"><div class="previewLabel">Förhandsvisning av hela ringen</div><div id="previewRing" class="previewRing"></div><div class="previewNote">Justera reglagen och se förändringen direkt.</div></div><label>Färgernas täckning <output id="glassValue">45%</output><input type="range" id="glassRange" min="0" max="100" value="45"></label><label>Glöd runt ringen <output id="glowValue">70%</output><input type="range" id="glowRange" min="0" max="100" value="70"></label><label>Konturlinjernas tydlighet <output id="lineValue">100%</output><input type="range" id="lineRange" min="0" max="100" value="100"></label><hr></div><div id="centerOptions" class="appearanceSection" hidden><h4>🌑 Inre cirkelns inställningar</h4><label>Hur möter cirkeln ringen?<select id="centerRingFit"><option value="inside">Sluta vid ringens innerkant</option><option value="behind">Fortsätta bakom ringen</option><option value="gap">Litet mellanrum</option></select></label><label>Cirkelns färg <input type="color" id="centerColor" value="#050711"></label><label>Cirkelns mörkhet <output id="centerOpacityValue">77%</output><input type="range" id="centerOpacity" min="0" max="100" value="77"></label><p class="small">Storleken ändras med reglaget Gemensam storlek ovanför.</p></div><div id="digitsOptions" class="appearanceSection" hidden><h4>🔢 Siffrornas inställningar</h4><label>Typsnitt för tiden<select id="timeFont"><option value="modern">Modern (nuvarande)</option><option value="elegant">Elegant</option><option value="digital">Digital</option><option value="thin">Tunn & minimalistisk</option><option value="classicItalic">Klassiskt kursiv</option><option value="modernItalic">Modernt kursiv</option></select></label><label>Siffrornas storlek <output id="timeSizeValue">100%</output><input type="range" id="timeSizeRange" min="70" max="350" step="5" value="100"></label><label>Siffrornas lutning <output id="timeSlantValue">0°</output><input type="range" id="timeSlantRange" min="0" max="35" step="1" value="0"></label><label><input type="checkbox" id="timeAutoFit" style="width:auto"> Anpassa siffrorna till tillgängligt utrymme</label><label>Sifferfärg <input type="color" id="timeColor" value="#ffffff"></label><label><input type="checkbox" id="timePlateEnabled" style="width:auto"> Visa sifferbakgrund</label><label>Sifferbakgrundens färg <input type="color" id="timePlateColor" value="#f0c8d8"></label><label>Sifferbakgrundens genomskinlighet <output id="timePlateOpacityValue">85%</output><input type="range" id="timePlateOpacity" min="0" max="100" value="85"></label><p class="small">Ändringarna visas direkt. Siffrorna hålls centrerade.</p></div><button id="resetAppearance">Återställ utseendet</button><hr><strong>🔔 Ljud vid momentbyte</strong><label><input id="changeSoundEnabled" type="checkbox" checked> Spela ljud vid momentbyte</label><label>Välj ljud<select id="changeSoundType"><option value="bell">Mjuk klockklang</option><option value="piano">Pianotoner</option><option value="sparkle">Glittrande toner</option></select></label><label>Volym <output id="volumeValue">45%</output><input id="changeVolume" type="range" min="0" max="100" value="45"></label><button id="testSound">▶ Provlyssna</button><hr><strong>✨ Avslutning</strong><label><input id="showEndText" type="checkbox" checked> Visa avslutningstext</label><p class="small">Avslutningstexten ligger kvar. Fyrverkerier och text kan visas samtidigt.</p><button id="closeSettings">Stäng inställningar</button></div><div class="profileBox"><label for="profileSelect"><strong>Elev / lektionsupplägg</strong></label><select id="profileSelect" aria-label="Välj elev"></select><div class="profileActions"><button id="newProfile">＋ Ny</button><button id="copyProfile">⧉ Kopiera</button><button id="renameProfile">✎ Byt namn</button><button id="removeProfile">Ta bort</button></div><div class="small" id="profileInfo">Upplägget sparas på den här enheten.</div><div class="backupBox"><strong>💾 Säkerhetskopia</strong><p class="small">Spara elever, moment, avslutningar och inställningar i en fil. Filen kan öppnas på en annan enhet.</p><div class="profileActions"><button id="exportBackup">⬇ Exportera</button><button id="importBackup">⬆ Importera</button><input type="file" id="backupFile" accept=".json,application/json" hidden></div><p class="small" id="backupStatus" role="status" aria-live="polite">Spara gärna filen i iCloud Drive via Filer.</p></div></div><strong>Lektionsmoment</strong><div class="parts" id="parts"></div><div class="controls" style="justify-content:flex-start"><button id="sound">🔔 Ljud på</button><button id="fx">🎆 Fyrverkerier på</button><button id="edit">✎ Redigera</button><button id="add">＋ Moment</button><button id="photo">🖼 Byt bild</button><input type="file" id="photoInput" accept="image/*" hidden></div><div id="editor" class="hidden"><div class="field"><label>Namn</label><input id="ename"></div><div class="field"><label>Minuter</label><input type="number" id="emin" min="1" max="180"></div><div class="field"><label>Färg</label><input type="color" id="ecolor"></div><div class="controls"><button id="save">Spara</button><button id="delete">Ta bort</button></div><div class="endSettings"><strong>✨ Lektionens avslutning</strong><div class="field"><label for="defaultMessage">Standardtext</label><textarea id="defaultMessage" rows="2" placeholder="Bra jobbat idag! 🎹"></textarea></div><div class="field"><label for="defaultEffect">Standardeffekt</label><select id="defaultEffect"><option value="fireworks">Fyrverkerier</option><option value="stars">Glittrande stjärnor</option><option value="glow">Mjukt ljus</option><option value="fade">Tona fram</option><option value="none">Ingen effekt</option></select></div><label><input type="checkbox" id="customEnd" style="width:auto"> Egen avslutning för vald elev</label><div id="customFields" class="hidden"><div class="field"><label for="customMessage">Elevens avslutningstext</label><textarea id="customMessage" rows="2"></textarea></div><div class="field"><label for="customEffect">Elevens effekt</label><select id="customEffect"><option value="fireworks">Fyrverkerier</option><option value="stars">Glittrande stjärnor</option><option value="glow">Mjukt ljus</option><option value="fade">Tona fram</option><option value="none">Ingen effekt</option></select></div></div><div class="controls"><button id="saveEnd">Spara avslutning</button><button id="previewEnd">▶ Förhandsvisa</button></div></div></div></aside><section class="panel timerpanel" style="text-align:center"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong id="name">Uppvärmning</strong><button id="focus">⛶ Fokus</button></div><div class="dial"><div id="momentFloating" class="momentFloating"></div><svg id="momentArcSvg" viewBox="0 0 240 240" aria-hidden="true"><defs><path id="momentTopPath" d="M 18 120 A 102 102 0 0 1 222 120"/><path id="momentBottomPath" d="M 18 120 A 102 102 0 0 0 222 120"/></defs><text><textPath id="momentArcText" href="#momentTopPath" startOffset="50%" text-anchor="middle"></textPath></text></svg><div class="shade" id="shade"></div><canvas id="glassRingCanvas" aria-hidden="true"></canvas><svg id="glassRingSvg" viewBox="0 0 240 240"><defs id="glassDefs"></defs><g id="segments"></g></svg><div class="numbers"><div class="small" id="subtitle">TID KVAR</div><div class="timePlate" id="timePlate"><div class="time" id="time">05:00</div></div><div class="small" id="percent">0 % avslöjat</div></div></div><p class="small" id="status">Moment 1 av 5</p><div class="controls transport"><button id="prev" aria-label="Föregående">Föregående</button><button class="primary" id="play" aria-label="Starta eller pausa">Starta</button><button id="next" aria-label="Nästa">Nästa</button><button id="reset" aria-label="Återställ">Återställ</button><button id="finish" aria-label="Avsluta lektionen">Avsluta</button></div></section></div><dialog id="importDialog" class="importDialog" aria-labelledby="importTitle"><h3 id="importTitle">📂 Importera säkerhetskopia</h3><p id="importSummary"></p><div class="importChoices"><button type="button" id="importReplace">Ersätt alla<small>Ersätter elever och inställningar på den här enheten.</small></button><button type="button" id="importAdd">Lägg till som kopior<small>Behåller befintliga elever och inställningar.</small></button><button type="button" id="importCancel" class="cancelImport">Avbryt<small>Ingen information ändras.</small></button></div></dialog><div id="fire" class="fire"></div><div id="endOverlay" class="endOverlay hidden" role="status"><div class="endCard"><div id="endMessage" class="endMessage"></div><button id="endPreviewClose" class="endPreviewClose hidden">Stäng förhandsvisning</button></div></div></main><script>
+(()=>{'use strict';const $=id=>document.getElementById(id),root=$('app');let parts=[{name:'Uppvärmning',min:5,color:'#ffc48d'},{name:'Teknik',min:7,color:'#5ed8c7'},{name:'Repertoar',min:10,color:'#bca6f6'},{name:'Ackord & samspel',min:5,color:'#ed92c5'},{name:'Avslutning',min:3,color:'#80bff3'}];const baseParts=()=>parts.map(p=>({...p}));let profiles=[],activeId='',defaultEnd={message:'Bra jobbat idag! 🎹',effect:'fireworks'};
+try{const saved=JSON.parse(localStorage.getItem('piano-b30-data'));if(saved&&Array.isArray(saved.profiles)&&saved.profiles.length){profiles=saved.profiles.filter(p=>p&&Array.isArray(p.parts)&&p.parts.length).map(p=>({...p,parts:p.parts.map(x=>({...x,min:Math.max(1,Number(x.min)||1)}))}));activeId=saved.activeId;defaultEnd={...defaultEnd,...saved.defaultEnd}}}catch{}
+if(!profiles.length){try{const old=JSON.parse(localStorage.getItem('piano-parts'));if(Array.isArray(old)&&old.length)parts=old}catch{}profiles=[{id:'standard',name:'Standardlektion',parts:baseParts(),end:null}];activeId='standard'}
+if(!profiles.some(p=>p.id===activeId))activeId=profiles[0].id;
+const currentProfile=()=>profiles.find(p=>p.id===activeId)||profiles[0];parts=currentProfile().parts.map(p=>({...p}));
+function saveAll(){currentProfile().parts=parts.map(p=>({...p}));try{localStorage.setItem('piano-b30-data',JSON.stringify({profiles,activeId,defaultEnd}))}catch{alert('Det gick inte att spara. Kontrollera lagringsutrymmet.')}}
+function updateProfileList(){const select=$('profileSelect');select.replaceChildren();profiles.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.name;select.append(o)});select.value=activeId;$('removeProfile').disabled=profiles.length===1;$('profileInfo').textContent=`${parts.length} moment · ${Math.round(parts.reduce((n,p)=>n+p.min,0))} minuter · sparas på den här enheten`}
+function loadEndSettings(){$('defaultMessage').value=defaultEnd.message;$('defaultEffect').value=defaultEnd.effect;const custom=currentProfile().end;$('customEnd').checked=!!custom;$('customFields').classList.toggle('hidden',!custom);$('customMessage').value=custom?.message||defaultEnd.message;$('customEffect').value=custom?.effect||defaultEnd.effect}
+function saveEndSettings(){defaultEnd={message:$('defaultMessage').value.trim()||'Bra jobbat idag! 🎹',effect:$('defaultEffect').value};currentProfile().end=$('customEnd').checked?{message:$('customMessage').value.trim()||defaultEnd.message,effect:$('customEffect').value}:null;saveAll()}
+function changeProfile(id){if(!profiles.some(p=>p.id===id))return;saveAll();stop();done=false;hideEnd();activeId=id;parts=currentProfile().parts.map(p=>({...p}));idx=0;left=parts[0].min*60;saveAll();updateProfileList();loadEndSettings();applySettings();draw();sync()}
+function uniqueId(){return 'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function hideEnd(){$('endOverlay').className='endOverlay hidden';$('endPreviewClose').classList.add('hidden')}
+function showEnd(preview=false){const end=currentProfile().end||defaultEnd;$('endMessage').textContent=settings.showEndText?end.message:'';$('endOverlay').className='endOverlay '+(end.effect==='none'?'':end.effect);$('endPreviewClose').classList.toggle('hidden',!preview);const dialRect=document.querySelector('.dial').getBoundingClientRect();const card=$('endOverlay').querySelector('.endCard');card.style.position='fixed';card.style.left=(dialRect.left+dialRect.width/2)+'px';card.style.top=(dialRect.top+dialRect.height/2)+'px';card.style.transform='translate(-50%,-50%)';card.style.width=Math.round(dialRect.width*.58)+'px';if(end.effect==='fireworks')fire();if(end.effect==='stars'){const holder=$('fire');holder.replaceChildren();for(let i=0;i<80;i++){const e=document.createElement('span');e.className='spark';for(const [k,v] of Object.entries({'--x':Math.random()*100+'%','--y':Math.random()*100+'%','--dx':(Math.random()-.5)*65+'px','--dy':(Math.random()-.5)*65+'px','--c':['#fff2bd','#b7eaff','#f8b8f1'][i%3],'--delay':Math.random()*1.5+'s'}))e.style.setProperty(k,v);holder.append(e)}setTimeout(()=>holder.replaceChildren(),4600)}}
+const appearanceDefaults={statusVisible:true,statusPosition:"bottom",statusFont:"modern",statusSize:100,statusColor:"#ffffff",subtitleVisible:true,percentVisible:true,subtitleFont:"modern",percentFont:"modern",subtitleSize:100,percentSize:100,subtitleColor:"#ffffff",percentColor:"#ffffff",subtitlePosition:"normal",percentPosition:"normal",momentVisible:true,momentPosition:"outside",momentFont:"modern",momentSize:100,momentColor:"#ffffff",momentDistance:12,transportVisible:true,transportPosition:"bottom",transportRows:"auto",transportShape:"rounded",transportSize:100,transportOpacity:75,transportColor:"#40354f",transportTextColor:"#ffffff",transportBorderColor:"#ffffff",transportFont:"modern",transportTextSize:100,showPrev:true,showPlay:true,showNext:true,showReset:true,showFinish:true,ringSize:100,timeSize:100,timeSlant:0,timeFont:'modern',timeAutoFit:false,timeColor:'#ffffff',timePlateEnabled:false,timePlateColor:'#f0c8d8',timePlateOpacity:85,centerColor:'#050711',centerOpacity:77,glass:55,dark:77,glow:70,line:100,changeSoundEnabled:true,changeSoundType:'bell',volume:45,showEndText:true};let settings={...appearanceDefaults};try{const previous=JSON.parse(localStorage.getItem('piano-b31-settings')||'{}');settings={...settings,...previous};if(previous.glass!==undefined)settings.glass=Math.round(100-previous.glass*.55)}catch{}try{const old=JSON.parse(localStorage.getItem('piano-b32-settings')||'{}');settings={...settings,...old};settings.glass=100-(Number(old.glass??45))}catch{}try{settings={...settings,...JSON.parse(localStorage.getItem('piano-b332-settings')||'{}')}}catch{}
+// B35.11: one-time repair for legacy presets where all three ring controls
+// were saved at zero while older rendering still showed the ring.
+// Do not override intentional future zero settings after this migration.
+try {
+ const migrationKey='piano-b3510-ring-zero-migrated';
+ if(localStorage.getItem(migrationKey)!=='yes') {
+  if(Number(settings.glass)===0 && Number(settings.glow)===0 && Number(settings.line)===0) {
+   settings.glass=55; settings.glow=70; settings.line=100;
+   localStorage.setItem('piano-b332-settings',JSON.stringify(settings));
+  }
+  localStorage.setItem(migrationKey,'yes');
+ }
+} catch(e) { /* Storage may be disabled; leave app usable. */ }
+function saveSettings(){try{localStorage.setItem('piano-b332-settings',JSON.stringify(settings))}catch{}}
+function fitTime(){const t=$('time'),dial=document.querySelector('.dial');if(!t||!dial)return;const mode=currentProfile().displayMode||'ring-time';const width=dial.getBoundingClientRect().width||400;const maxWidth=mode==='digital'?Math.min(window.innerWidth*.91,width*1.6):width*(mode==='center-time'?.79:.70);const base=Math.min(84,Math.max(43,window.innerWidth*.09));const requested=base*(Number(settings.timeSize)||100)/100;t.style.fontSize=requested+'px';if(settings.timeAutoFit){t.style.fontSize='300px';const natural=t.scrollWidth||t.getBoundingClientRect().width||300;const target=Math.min(300,300*maxWidth/Math.max(natural,1));t.style.fontSize=target+'px'}else{const natural=t.scrollWidth||1;if(natural>maxWidth)t.style.fontSize=Math.max(12,requested*maxWidth/natural)+'px'} }
+window.addEventListener('resize',()=>{if(typeof settings!=='undefined')fitTime()});
+function applySettings(){settings.ringSize=Number.isFinite(Number(settings.ringSize))?Math.max(70,Math.min(200,Number(settings.ringSize))):100;root.style.setProperty('--ring-size-factor',settings.ringSize/100);$('ringSizeRange').value=settings.ringSize;$('ringSizeValue').textContent=settings.ringSize+'%';settings.timeSize=Math.max(70,Math.min(350,Number(settings.timeSize)||100));settings.timeSlant=Math.max(0,Math.min(35,Number(settings.timeSlant)||0));if(!['modern','elegant','digital','thin','classicItalic','modernItalic'].includes(settings.timeFont))settings.timeFont='modern';$('timeSizeRange').value=settings.timeSize;$('timeSizeValue').textContent=settings.timeSize+'%';$('timeSlantRange').value=settings.timeSlant;$('timeSlantValue').textContent=settings.timeSlant+'°';$('timeFont').value=settings.timeFont;const t=$('time');t.style.fontFamily=({modern:'system-ui,-apple-system,sans-serif',elegant:'Georgia,serif',digital:'ui-monospace,SFMono-Regular,Menlo,monospace',thin:'Arial,Helvetica,sans-serif',classicItalic:'Georgia,serif',modernItalic:'Arial,Helvetica,sans-serif'})[settings.timeFont];t.style.fontWeight=settings.timeFont==='thin'?'300':settings.timeFont==='elegant'||settings.timeFont==='classicItalic'?'400':'800';t.style.fontStyle=settings.timeFont.endsWith('Italic')?'italic':'normal';t.style.transform='skewX(-'+settings.timeSlant+'deg)';t.style.transformOrigin='center center';root.style.setProperty('--glass-transparency',1-settings.glass/100);root.style.setProperty('--shade-visibility',1);root.style.setProperty('--center-dark',settings.centerOpacity/100);root.style.setProperty('--center-color',settings.centerColor||'#050711');root.style.setProperty('--center-opacity',(Number(settings.centerOpacity??77))/100);root.style.setProperty('--ring-glow',settings.glow/100);document.getElementById('segments').style.filter='none';root.style.setProperty('--line-opacity',settings.line/100);
+function applyExtraAppearance(){
+ const get=(k,def)=>settings[k]??def;
+ for(const [id,key] of [['showMoment','momentVisible'],['showTransport','transportVisible'],['showPrev','showPrev'],['showPlay','showPlay'],['showNext','showNext'],['showReset','showReset'],['showFinish','showFinish']])$(id).checked=!!get(key,true);
+ for(const [id,key] of [['momentPosition','momentPosition'],['momentFont','momentFont'],['momentSize','momentSize'],['momentColor','momentColor'],['momentDistance','momentDistance'],['transportPosition','transportPosition'],['transportRows','transportRows'],['transportShape','transportShape'],['transportSize','transportSize'],['transportOpacity','transportOpacity'],['transportColor','transportColor'],['transportTextColor','transportTextColor'],['transportBorderColor','transportBorderColor'],['transportFont','transportFont'],['transportTextSize','transportTextSize']])$(id).value=get(key,appearanceDefaults[key]);
+ for(const key of ['momentSize','momentDistance','transportSize','transportOpacity','transportTextSize'])$(key+'Value').textContent=get(key,appearanceDefaults[key])+(key==='momentDistance'?'px':'%');
+ const dial=document.querySelector('.dial'),pos=get('momentPosition','outside'),name=$('name'),float=$('momentFloating'),arc=$('momentArcSvg'),text=$('momentArcText');
+ const family={modern:'system-ui,-apple-system,sans-serif',elegant:'Georgia,serif',digital:'ui-monospace,monospace',thin:'Arial,sans-serif',italic:'Georgia,serif'}[get('momentFont','modern')];
+ const size=Math.max(.5,Math.min(5,Number(get('momentSize',100))/100)),dist=Number(get('momentDistance',12));
+ const shown=!!get('momentVisible',true);name.style.display=shown&&pos==='outside'?'':'none';float.style.display=shown&&pos!=='outside'&&!pos.startsWith('arc-')?'block':'none';arc.style.display=shown&&pos.startsWith('arc-')?'block':'none';
+ const label=($('name').textContent||'Uppvärmning');float.textContent=label;text.textContent=label;
+ for(const el of [name,float,arc]){el.style.fontFamily=family;el.style.fontStyle=get('momentFont','modern')==='italic'?'italic':'normal';el.style.color=get('momentColor','#ffffff');el.style.fontSize=(el===name?16:Math.max(11,16*size))+'px'}name.style.fontSize=Math.max(10,16*size)+'px';
+ float.className='momentFloating pos-'+pos;float.style.setProperty('--moment-distance',dist+'px');
+ text.setAttribute('href',pos==='arc-bottom'?'#momentBottomPath':'#momentTopPath');arc.querySelector('text').setAttribute('fill',get('momentColor','#ffffff'));arc.querySelector('text').setAttribute('font-size',Math.max(9,15*size));arc.querySelector('text').setAttribute('font-family',family);arc.querySelector('text').setAttribute('font-style',get('momentFont','modern')==='italic'?'italic':'normal');
+ const inside=pos.startsWith('inside-');dial.classList.toggle('moment-instead',shown&&pos==='inside-instead');
+ const transport=document.querySelector('.controls.transport');transport.classList.toggle('transport-hidden',!get('transportVisible',true));
+ transport.classList.toggle('transport-top',get('transportPosition','bottom')==='top');transport.classList.toggle('transport-fixed',get('transportPosition','bottom')==='fixed');
+ transport.classList.toggle('transport-one',get('transportRows','auto')==='one');transport.classList.toggle('transport-two',get('transportRows','auto')==='two');
+ const radius=get('transportShape','rounded')==='pill'?'999px':get('transportShape','rounded')==='square'?'2px':'13px';
+ const hex=get('transportColor','#40354f');const alpha=Math.round(Number(get('transportOpacity',75))*2.55).toString(16).padStart(2,'0');
+ transport.style.setProperty('--transport-bg',hex+alpha);transport.style.setProperty('--transport-fg',get('transportTextColor','#ffffff'));transport.style.setProperty('--transport-border',get('transportBorderColor','#ffffff'));transport.style.setProperty('--transport-radius',radius);transport.style.setProperty('--transport-text-size',(14*Number(get('transportTextSize',100))/100)+'px');transport.style.setProperty('--transport-padding',(9*Number(get('transportSize',100))/100)+'px '+(11*Number(get('transportSize',100))/100)+'px');const tf={modern:'system-ui,-apple-system,sans-serif',elegant:'Georgia,serif',digital:'ui-monospace,monospace',italic:'Georgia,serif'}[get('transportFont','modern')];
+ transport.style.setProperty('--transport-font',tf);for(const [id,key] of [['prev','showPrev'],['play','showPlay'],['next','showNext'],['reset','showReset'],['finish','showFinish']]){const btn=$(id);btn.classList.toggle('transport-hidden',!get(key,true));btn.style.backgroundColor=hex+alpha;btn.style.color=get('transportTextColor','#ffffff');btn.style.borderColor=get('transportBorderColor','#ffffff');btn.style.borderRadius=radius;btn.style.fontFamily=tf;btn.style.fontStyle=get('transportFont','modern')==='italic'?'italic':'normal';btn.style.fontSize=(14*Number(get('transportTextSize',100))/100)+'px';btn.style.padding=(9*Number(get('transportSize',100))/100)+'px '+(11*Number(get('transportSize',100))/100)+'px';}
+}
+for(const [id,key] of [['showMoment','momentVisible'],['showTransport','transportVisible'],['showPrev','showPrev'],['showPlay','showPlay'],['showNext','showNext'],['showReset','showReset'],['showFinish','showFinish'],['momentPosition','momentPosition'],['momentFont','momentFont'],['momentSize','momentSize'],['momentColor','momentColor'],['momentDistance','momentDistance'],['transportPosition','transportPosition'],['transportRows','transportRows'],['transportShape','transportShape'],['transportSize','transportSize'],['transportOpacity','transportOpacity'],['transportColor','transportColor'],['transportTextColor','transportTextColor'],['transportBorderColor','transportBorderColor'],['transportFont','transportFont'],['transportTextSize','transportTextSize']]){$(id).addEventListener($(id).type==='checkbox'?'change':'input',()=>{settings[key]=$(id).type==='checkbox'?$(id).checked:$(id).type==='range'?Number($(id).value):$(id).value;applyExtraAppearance();saveSettings()})}
+
+for(const [key,id] of [['glass','glassRange'],['glow','glowRange'],['line','lineRange'],['volume','changeVolume']]){$(id).value=settings[key];$(key==='volume'?'volumeValue':key+'Value').textContent=settings[key]+'%'}$('changeSoundEnabled').checked=settings.changeSoundEnabled;$('changeSoundType').value=settings.changeSoundType;$('showEndText').checked=settings.showEndText;const mode=currentProfile().displayMode||'ring-time';$('displayMode').value=mode;document.querySelector('.dial').classList.remove('mode-ring-time','mode-ring','mode-center-time','mode-center-only','mode-digital','mode-photo');document.querySelector('.dial').classList.add('mode-'+mode);const visible=mode==='custom'?(currentProfile().visibleParts||{glass:true,center:true,digits:true}):({ 'ring-time':{glass:true,center:true,digits:true},ring:{glass:true,center:false,digits:false},'center-time':{glass:false,center:true,digits:true},'center-only':{glass:false,center:true,digits:false},digital:{glass:false,center:false,digits:true},photo:{glass:false,center:false,digits:false}}[mode]||{glass:true,center:true,digits:true});for(const [k,id] of [['glass','showGlass'],['center','showCenter'],['digits','showDigits']])$(id).checked=!!visible[k];const dialEl=document.querySelector('.dial');dialEl.classList.toggle('compose-no-glass',!visible.glass);dialEl.classList.toggle('compose-no-center',!visible.center);dialEl.classList.toggle('compose-no-digits',!visible.digits);dialEl.classList.toggle('compose-has-center',!!visible.center);if(mode==='custom'){dialEl.classList.remove('mode-custom');dialEl.classList.add('mode-ring-time')}const hex=v=>/^#[0-9a-fA-F]{6}$/.test(v||'')?v:'#ffffff';settings.timeColor=hex(settings.timeColor);settings.timePlateColor=hex(settings.timePlateColor);settings.centerColor=hex(settings.centerColor||'#050711');settings.timePlateOpacity=Math.max(0,Math.min(100,Number(settings.timePlateOpacity??85)));settings.centerOpacity=Math.max(0,Math.min(100,Number(settings.centerOpacity??77)));$('timeColor').value=settings.timeColor;$('timePlateColor').value=settings.timePlateColor;$('centerColor').value=settings.centerColor;$('timeAutoFit').checked=!!settings.timeAutoFit;$('timePlateEnabled').checked=!!settings.timePlateEnabled;$('timePlateOpacity').value=settings.timePlateOpacity;$('timePlateOpacityValue').textContent=settings.timePlateOpacity+'%';$('centerOpacity').value=settings.centerOpacity;$('centerOpacityValue').textContent=settings.centerOpacity+'%';t.style.color=settings.timeColor;const plate=$('timePlate');plate.style.setProperty('--plate-color',settings.timePlateColor);plate.style.opacity='1';plate.style.setProperty('--plate-opacity',settings.timePlateOpacity/100);plate.classList.toggle('enabled',!!settings.timePlateEnabled);fitTime();applyExtraAppearance();}
+for(const [key,id] of [['glass','glassRange'],['glow','glowRange'],['line','lineRange'],['volume','changeVolume']]){$(id).oninput=()=>{settings[key]=Number($(id).value);applySettings();if(key!=='volume'){draw();drawGlassCanvas()}saveSettings()}}
+for(const [id,key,kind] of [['timeAutoFit','timeAutoFit','check'],['timePlateEnabled','timePlateEnabled','check'],['timeColor','timeColor','value'],['timePlateColor','timePlateColor','value'],['centerColor','centerColor','value'],['timePlateOpacity','timePlateOpacity','number'],['centerOpacity','centerOpacity','number']]){$(id).addEventListener(kind==='check'?'change':'input',()=>{settings[key]=kind==='check'?$(id).checked:kind==='number'?Number($(id).value):$(id).value;applySettings();saveSettings()})}for(const [id,key] of [['timeSizeRange','timeSize'],['timeSlantRange','timeSlant']]){$(id).oninput=()=>{settings[key]=Number($(id).value);applySettings();saveSettings()}}$('timeFont').onchange=()=>{settings.timeFont=$('timeFont').value;applySettings();saveSettings()};$('ringSizeRange').oninput=()=>{settings.ringSize=Number($('ringSizeRange').value);applySettings();saveSettings()};for(const [k,id] of [['glass','showGlass'],['center','showCenter'],['digits','showDigits']])$(id).onchange=()=>{const p=currentProfile();if(p.displayMode!=='custom'){p.visibleParts={glass:$('showGlass').checked,center:$('showCenter').checked,digits:$('showDigits').checked};p.displayMode='custom'}else p.visibleParts[k]=$(id).checked;saveAll();draw()};$('displayMode').onchange=()=>{currentProfile().displayMode=$('displayMode').value;saveAll();applySettings();draw()};$('changeSoundEnabled').onchange=()=>{settings.changeSoundEnabled=$('changeSoundEnabled').checked;saveSettings()};$('changeSoundType').onchange=()=>{settings.changeSoundType=$('changeSoundType').value;saveSettings()};$('showEndText').onchange=()=>{settings.showEndText=$('showEndText').checked;saveSettings()};$('resetAppearance').onclick=()=>{Object.assign(settings,{ringSize:100,timeSize:100,timeSlant:0,timeFont:'modern',timeAutoFit:false,timeColor:'#ffffff',timePlateEnabled:false,timePlateColor:'#f0c8d8',timePlateOpacity:85,centerColor:'#050711',centerOpacity:77,glass:55,dark:77,glow:70,line:100});applySettings();draw();saveSettings()};document.querySelectorAll('.appearanceInfo').forEach(btn=>btn.addEventListener('click',()=>{const panel=document.getElementById(btn.dataset.section);const opening=panel.hidden;document.querySelectorAll('.appearanceSection').forEach(el=>el.hidden=true);document.querySelectorAll('.appearanceInfo').forEach(el=>el.setAttribute('aria-expanded','false'));panel.hidden=!opening;btn.setAttribute('aria-expanded',String(opening));if(opening)panel.scrollIntoView({block:'nearest',behavior:'smooth'});}));$('settingsToggle').onclick=()=>$('settingsPanel').classList.toggle('hidden');$('closeSettings').onclick=()=>$('settingsPanel').classList.add('hidden');
+let audioCtx=null;function playMomentSound(force=false){if(!force&&(!sound||!settings.changeSoundEnabled))return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;audioCtx=audioCtx||new AC();audioCtx.resume();const now=audioCtx.currentTime;const tones=settings.changeSoundType==='piano'?[[523.25,0,.42],[659.25,.08,.4],[783.99,.16,.46]]:settings.changeSoundType==='sparkle'?[[880,0,.18],[1174.66,.12,.2],[1567.98,.25,.28]]:[[880,0,.65],[1320,.04,.48]];tones.forEach(([hz,delay,duration])=>{const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();osc.type=settings.changeSoundType==='piano'?'triangle':'sine';osc.frequency.setValueAtTime(hz,now+delay);gain.gain.setValueAtTime(.0001,now+delay);gain.gain.exponentialRampToValueAtTime(Math.max(.001,settings.volume/100*.10),now+delay+.015);gain.gain.exponentialRampToValueAtTime(.0001,now+delay+duration);osc.connect(gain);gain.connect(audioCtx.destination);osc.start(now+delay);osc.stop(now+delay+duration+.01)})}catch{}}
+$('testSound').onclick=()=>playMomentSound(true);applySettings();
+
+function applySmallLabels(){
+ const fonts={modern:'system-ui, sans-serif',elegant:'Georgia, serif',digital:'monospace',italic:'Georgia, serif',thin:'Arial, sans-serif'};
+ for(const [key,id,toggle] of [['subtitle','subtitle','showSubtitle'],['percent','percent','showPercent']]){
+  const el=$(id), visible=settings[key+'Visible']!==false;
+  $(toggle).checked=visible;
+  el.style.display=visible?'':'none';
+  const size=Math.max(50,Math.min(400,Number(settings[key+'Size']||100)));
+  el.style.fontSize=(11*size/100)+'px';
+  el.style.fontFamily=fonts[settings[key+'Font']]||fonts.modern;
+  el.style.fontStyle=settings[key+'Font']==='italic'?'italic':'normal';
+  el.style.fontWeight=settings[key+'Font']==='thin'?'300':'500';
+  el.style.color=settings[key+'Color']||'#ffffff';
+  const position=settings[key+'Position']||'normal';
+  el.style.transform=position==='up'?'translateY(-12px)':position==='down'?'translateY(12px)':'';
+  for(const prop of ['Font','Size','Color','Position']){
+   const input=$(key+prop);if(input)input.value=settings[key+prop]??(prop==='Size'?100:prop==='Color'?'#ffffff':prop==='Position'?'normal':'modern');
+  }
+  $(key+'SizeValue').textContent=size+'%';
+ }
+}
+for(const key of ['subtitle','percent']){
+ const cb=$('show'+key[0].toUpperCase()+key.slice(1));
+ cb.addEventListener('change',()=>{settings[key+'Visible']=cb.checked;applySmallLabels();saveSettings()});
+ for(const prop of ['Font','Size','Color','Position']){
+  const el=$(key+prop);el.addEventListener(el.tagName==='SELECT'?'change':'input',()=>{settings[key+prop]=prop==='Size'?Number(el.value):el.value;applySmallLabels();saveSettings()});
+ }
+}
+applySmallLabels();
+
+// B35.11: The moment indicator is positioned relative to the viewport, not the ring.
+function applyStatusAppearance(){
+ const el=$('status'),visible=settings.statusVisible!==false;
+ $('showStatus').checked=visible;
+ el.style.display=visible?'block':'none';
+ const pos=['bottom','top','left','right'].includes(settings.statusPosition)?settings.statusPosition:'bottom';
+ const size=Math.max(50,Math.min(400,Number(settings.statusSize??100)));
+ const fonts={modern:'system-ui,-apple-system,sans-serif',elegant:'Georgia,serif',digital:'monospace',thin:'Arial,sans-serif',italic:'Georgia,serif'};
+ el.style.position='fixed';el.style.setProperty('position','fixed','important');
+ el.style.setProperty('top',pos==='top'?'76px':pos==='left'||pos==='right'?'50%':'auto','important');
+ el.style.setProperty('bottom',pos==='bottom'?'24px':'auto','important');
+ el.style.setProperty('left',pos==='left'?'18px':pos==='right'?'auto':'50%','important');
+ el.style.setProperty('right',pos==='right'?'18px':'auto','important');
+ el.style.setProperty('transform',pos==='left'||pos==='right'?'translateY(-50%)':'translateX(-50%)','important');
+ el.style.setProperty('z-index','30','important');
+ el.style.setProperty('font-size',(11*size/100)+'px','important');
+ el.style.color=settings.statusColor||'#ffffff';el.style.fontFamily=fonts[settings.statusFont]||fonts.modern;
+ el.style.fontStyle=settings.statusFont==='italic'?'italic':'normal';
+ el.style.fontWeight=settings.statusFont==='thin'?'300':'500';
+ $('statusPosition').value=pos;$('statusFont').value=settings.statusFont||'modern';
+ $('statusSize').value=size;$('statusSizeValue').textContent=size+'%';$('statusColor').value=settings.statusColor||'#ffffff';
+}
+$('showStatus').addEventListener('change',e=>{settings.statusVisible=e.target.checked;applyStatusAppearance();saveSettings()});
+for(const prop of ['Position','Font','Size','Color']){
+ const el=$('status'+prop);el.addEventListener(el.tagName==='SELECT'?'change':'input',()=>{settings['status'+prop]=prop==='Size'?Number(el.value):el.value;applyStatusAppearance();saveSettings()});
+}
+applyStatusAppearance();
+
+// B35.5: Render ring on a dedicated canvas, independent of older SVG CSS rules.
+function makeGlassSvg(svg){
+ if(!svg)return;
+ const NS='http://www.w3.org/2000/svg';
+ svg.setAttribute('viewBox','0 0 240 240');
+ svg.setAttribute('width','100%');svg.setAttribute('height','100%');
+ svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+ svg.replaceChildren();
+ const totalMin=parts.reduce((a,p)=>a+Math.max(0,Number(p.min)||0),0)||1;
+ const cover=Math.max(0,Math.min(1,Number(settings.glass??55)/100));
+ const glow=Math.max(0,Math.min(1,Number(settings.glow??70)/100));
+ const lines=Math.max(0,Math.min(1,Number(settings.line??100)/100));
+ const arc=(radius,a,b)=>{const x=t=>120+radius*Math.cos(t),y=t=>120+radius*Math.sin(t);return `M ${x(a)} ${y(a)} A ${radius} ${radius} 0 ${b-a>Math.PI?1:0} 1 ${x(b)} ${y(b)}`};
+ let a=-Math.PI/2;
+ for(const part of parts){
+  const span=Math.PI*2*(Math.max(0,Number(part.min)||0)/totalMin);
+  const gap=Math.min(.015,span*.08),start=a+gap,end=a+span-gap;
+  if(end>start){
+   for(const [width,alpha,blur] of [[32,glow*.65,glow*15],[22,cover,0]]){
+    if(alpha<=0)continue;
+    const path=document.createElementNS(NS,'path');
+    path.setAttribute('d',arc(109,start,end));path.setAttribute('fill','none');
+    path.setAttribute('stroke',/^#[0-9a-f]{6}$/i.test(part.color)?part.color:'#a7c9ff');
+    path.setAttribute('stroke-width',width);path.setAttribute('stroke-opacity',alpha);
+    if(blur)path.setAttribute('style',`filter:blur(${Math.max(1,blur/3)}px)`);
+    svg.append(path);
+   }
+  }
+  a+=span;
+ }
+ if(lines>0)for(const radius of [97.5,120.5]){
+  const c=document.createElementNS(NS,'circle');
+  c.setAttribute('cx',120);c.setAttribute('cy',120);c.setAttribute('r',radius);
+  c.setAttribute('fill','none');c.setAttribute('stroke','#ffffff');
+  c.setAttribute('stroke-width',.4+.6*lines);c.setAttribute('stroke-opacity',.85*lines);
+  svg.append(c);
+ }
+}
+function drawGlassCanvas(){
+ // At zero coverage, glow and contour strength, the SVG is deliberately empty.
+ settings.glass=Math.max(0,Math.min(100,Number(settings.glass??55)));
+ settings.glow=Math.max(0,Math.min(100,Number(settings.glow??70)));
+ settings.line=Math.max(0,Math.min(100,Number(settings.line??100)));
+
+ const dial=document.querySelector('.dial');
+ if(dial){let svg=$('glassFixedSvg');if(!svg){svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.id='glassFixedSvg';svg.setAttribute('aria-hidden','true');dial.append(svg)}makeGlassSvg(svg)}
+ const target=$('previewRing');
+ if(target){let svg=$('glassPreviewFixedSvg');if(!svg){target.replaceChildren();svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.id='glassPreviewFixedSvg';svg.setAttribute('aria-label','Förhandsvisning av glasringens färgsegment');target.append(svg)}makeGlassSvg(svg)}
+}
+function applyCenterRingFit(){
+ const mode=['inside','behind','gap'].includes(settings.centerRingFit)?settings.centerRingFit:'inside';
+ const control=$('centerRingFit');if(control)control.value=mode;
+ document.documentElement.style.setProperty('--center-ring-inset',mode==='behind'?'0%':mode==='gap'?'12%':'9.375%');
+}
+$('centerRingFit').addEventListener('change',e=>{settings.centerRingFit=e.target.value;applyCenterRingFit();saveSettings();});
+applyCenterRingFit();
+window.addEventListener('resize',()=>{if(typeof drawGlassCanvas==='function')drawGlassCanvas()});
+let idx=0,left=parts[0].min*60,run=false,done=false,deadline=0,ticker=null,sound=true,fx=true,audio;const total=()=>parts.reduce((s,p)=>s+p.min*60,0),prior=()=>parts.slice(0,idx).reduce((s,p)=>s+p.min*60,0),fmt=n=>{n=Math.max(0,Math.ceil(n));return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')};function persist(){saveAll();updateProfileList()}function draw(){applySettings();const isPhoto=(currentProfile().displayMode==='photo');$('name').style.visibility=isPhoto?'hidden':'';$('status').style.visibility=isPhoto?'hidden':'';const p=parts[idx],ratio=done?1:Math.max(0,Math.min(1,(prior()+p.min*60-left)/total()));root.style.setProperty('--accent',p.color);$('shade').style.setProperty('--angle',ratio*360+'deg');document.querySelector('.dial').style.setProperty('--angle-num',String(ratio*360));$('name').textContent=done?'Bra jobbat! 🎉':p.name;applyExtraAppearance();$('subtitle').textContent=done?'LEKTIONEN ÄR KLAR':'TID KVAR';$('time').textContent=fmt(done?0:left);fitTime();$('percent').textContent=done?'🎆 Lektionen avslutad':Math.round(ratio*100)+' % avslöjat';applySmallLabels();$('status').textContent=done?'Alla moment är klara':`Moment ${idx+1} av ${parts.length} · ${Math.round(total()/60)} min totalt`;applyStatusAppearance();$('play').textContent=done?'Börja om':run?'Pausa':'Starta';$('prev').disabled=!done&&idx===0;$('next').disabled=done;// B35.14: only glassFixedSvg renders the ring; legacy ring paths are retired.
+drawGlassCanvas();const list=$('parts');list.replaceChildren();parts.forEach((p,i)=>{const b=document.createElement('button');b.className='part'+(idx===i&&!done?' active':'');const dot=document.createElement('span');dot.className='dot';dot.style.background=p.color;const t=document.createElement('span');const title=document.createElement('strong');title.textContent=p.name;const sub=document.createElement('span');sub.className='small';sub.textContent=p.min+' minuter';t.append(title,sub);b.append(dot,t);b.onclick=()=>jump(i);list.append(b)})}function refreshPreview(){drawGlassCanvas();return;const target=$('previewRing');if(!target)return;const original=document.querySelector('#glassRingSvg');if(!original)return;const copy=original.cloneNode(true);
+const center=document.createElementNS('http://www.w3.org/2000/svg','circle');
+center.setAttribute('cx','120');center.setAttribute('cy','120');center.setAttribute('r','98');
+center.setAttribute('fill','#050711');center.setAttribute('fill-opacity',(settings.dark/100).toFixed(3));
+copy.insertBefore(center,copy.querySelector('defs').nextSibling);
+copy.querySelectorAll('[id]').forEach(el=>{el.id='mini-'+el.id});copy.querySelectorAll('[stroke]').forEach(el=>{const v=el.getAttribute('stroke');if(v&&v.startsWith('url(#'))el.setAttribute('stroke',v.replace('url(#','url(#mini-'))});copy.querySelectorAll('[filter]').forEach(el=>{const v=el.getAttribute('filter');if(v&&v.startsWith('url(#'))el.setAttribute('filter',v.replace('url(#','url(#mini-'))});const miniSegments=copy.querySelector('#mini-segments');if(miniSegments)miniSegments.style.filter='none';target.replaceChildren(copy);target.style.setProperty('--preview-dark',settings.dark/100)}function stop(){run=false;if(ticker)clearInterval(ticker);ticker=null}function beep(){if(!sound)return;try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;audio=audio||new A();audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.connect(g);g.connect(audio.destination);o.frequency.value=880;g.gain.setValueAtTime(.07,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.25);o.start();o.stop(audio.currentTime+.25)}catch{}}function fire(){if(!fx)return;const holder=$('fire');holder.replaceChildren();const colors=parts.map(p=>p.color);for(let b=0;b<7;b++){let x=12+Math.random()*76,y=10+Math.random()*60;for(let i=0;i<24;i++){const el=document.createElement('span');el.className='spark';const angle=i*Math.PI/12,r=50+Math.random()*110;for(const [k,v] of Object.entries({'--x':x+'%','--y':y+'%','--dx':Math.cos(angle)*r+'px','--dy':Math.sin(angle)*r+'px','--c':colors[(i+b)%colors.length],'--delay':b*.33+'s'}))el.style.setProperty(k,v);holder.append(el)}}setTimeout(()=>holder.replaceChildren(),4600)}function finish(){stop();done=true;left=0;draw();beep();showEnd(false)}function jump(i){const was=run;stop();done=false;hideEnd();$('fire').replaceChildren();idx=i;left=parts[i].min*60;if(was){run=true;deadline=Date.now()+left*1000;ticker=setInterval(tick,250)}draw();sync()}function tick(){if(!run)return;const now=Date.now();while(run&&now>=deadline){if(idx===parts.length-1){finish();return}idx++;playMomentSound();deadline+=parts[idx].min*60000}left=Math.max(0,Math.ceil((deadline-now)/1000));draw()}$('play').onclick=()=>{if(done){jump(0);return}if(run){left=Math.max(0,Math.ceil((deadline-Date.now())/1000));stop()}else{run=true;deadline=Date.now()+left*1000;ticker=setInterval(tick,250)}draw()};$('next').onclick=()=>{if(idx===parts.length-1)finish();else{jump(idx+1);playMomentSound()}};$('prev').onclick=()=>done?jump(parts.length-1):idx>0&&jump(idx-1);$('finish').onclick=finish;$('reset').onclick=()=>{stop();done=false;hideEnd();left=parts[idx].min*60;draw()};$('focus').onclick=()=>{root.classList.toggle('focus');$('focus').textContent=root.classList.contains('focus')?'✕ Avsluta fokus':'⛶ Fokus'};$('sound').onclick=()=>{sound=!sound;$('sound').textContent=sound?'🔔 Ljud på':'🔕 Ljud av'};$('fx').onclick=()=>{fx=!fx;$('fx').textContent=fx?'🎆 Fyrverkerier på':'🎆 Fyrverkerier av'};function sync(){const p=parts[idx];$('ename').value=p.name;$('emin').value=p.min;$('ecolor').value=p.color;$('delete').disabled=parts.length===1}$('edit').onclick=()=>{$('editor').classList.toggle('hidden');sync()};$('save').onclick=()=>{stop();done=false;const min=Math.max(1,Math.min(180,Math.round(Number($('emin').value)||1)));parts[idx]={name:$('ename').value.trim()||'Moment',min,color:$('ecolor').value};left=min*60;persist();draw()};$('add').onclick=()=>{stop();done=false;parts.push({name:'Nytt moment',min:5,color:'#baa2f5'});idx=parts.length-1;left=300;$('editor').classList.remove('hidden');persist();draw();sync()};$('delete').onclick=()=>{if(parts.length<2)return;stop();done=false;parts.splice(idx,1);idx=Math.min(idx,parts.length-1);left=parts[idx].min*60;persist();draw();sync()};$('photo').onclick=()=>$('photoInput').click();$('photoInput').onchange=e=>{const file=e.target.files?.[0];if(!file)return;const url=URL.createObjectURL(file);$('back').style.backgroundImage=`url("${url}")`;document.querySelector('.dial').style.setProperty('--custom-photo',`url("${url}")`)};$('profileSelect').onchange=()=>changeProfile($('profileSelect').value);
+$('newProfile').onclick=()=>{const name=prompt('Namn på elev eller lektionsupplägg:','Ny elev');if(!name?.trim())return;saveAll();const p={id:uniqueId(),name:name.trim(),parts:baseParts(),end:null,displayMode:currentProfile().displayMode||'ring-time'};profiles.push(p);activeId=p.id;parts=p.parts.map(x=>({...x}));stop();done=false;hideEnd();idx=0;left=parts[0].min*60;saveAll();updateProfileList();loadEndSettings();draw();sync()};
+$('copyProfile').onclick=()=>{const name=prompt('Namn på kopian:',currentProfile().name+' – kopia');if(!name?.trim())return;saveAll();const p={id:uniqueId(),name:name.trim(),parts:baseParts(),end:currentProfile().end?{...currentProfile().end}:null,displayMode:currentProfile().displayMode||'ring-time'};profiles.push(p);activeId=p.id;parts=p.parts.map(x=>({...x}));stop();done=false;hideEnd();idx=0;left=parts[0].min*60;saveAll();updateProfileList();loadEndSettings();draw();sync()};
+$('renameProfile').onclick=()=>{const name=prompt('Nytt namn:',currentProfile().name);if(!name?.trim())return;currentProfile().name=name.trim();saveAll();updateProfileList()};
+$('removeProfile').onclick=()=>{if(profiles.length<2||!confirm('Ta bort '+currentProfile().name+'?'))return;profiles=profiles.filter(p=>p.id!==activeId);activeId=profiles[0].id;parts=currentProfile().parts.map(x=>({...x}));stop();done=false;hideEnd();idx=0;left=parts[0].min*60;saveAll();updateProfileList();loadEndSettings();draw();sync()};
+// B34: Säkerhetskopiering utan extern server. Alla ändringar valideras före import.
+const backupStatus=message=>{$('backupStatus').textContent=message};
+$('exportBackup').onclick=()=>{
+ try{
+  saveAll();
+  const payload={format:'pianolektion-backup',version:1,exportedAt:new Date().toISOString(),profiles,activeId,defaultEnd,settings};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='Pianotimer-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.append(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+  backupStatus('Säkerhetskopian är skapad. Välj Filer/iCloud Drive om du får frågan var den ska sparas.');
+ }catch(e){backupStatus('Exporten misslyckades: '+e.message)}
+};
+$('importBackup').onclick=()=>{$('backupFile').value='';$('backupFile').click()};
+$('backupFile').onchange=async()=>{
+ const file=$('backupFile').files?.[0];if(!file)return;
+ try{
+  if(file.size>2*1024*1024)throw Error('Filen är för stor (max 2 MB).');
+  const data=JSON.parse(await file.text());
+  if(data?.format!=='pianolektion-backup'||data.version!==1||!Array.isArray(data.profiles)||!data.profiles.length||data.profiles.length>500)throw Error('Det här är inte en giltig säkerhetskopia från Pianotimer B34.');
+  const safeText=(v,max)=>typeof v==='string'&&v.length>0&&v.length<=max;
+  const effects=['fireworks','stars','glow','fade','none'],modes=['ring-time','ring','center-time','center-only','digital','photo','custom'];
+  const validEnd=e=>e===null||(e&&typeof e==='object'&&safeText(e.message,2000)&&effects.includes(e.effect));
+  const checked=data.profiles.map(p=>{
+   if(!p||!safeText(p.id,120)||!safeText(p.name,200)||!Array.isArray(p.parts)||!p.parts.length||p.parts.length>100||!validEnd(p.end??null)|| (p.displayMode!==undefined&&!modes.includes(p.displayMode)))throw Error('En elev innehåller ogiltiga uppgifter.');
+   return {id:p.id,name:p.name,parts:p.parts.map(x=>{if(!x||!safeText(x.name,200)||!Number.isInteger(x.min)||x.min<1||x.min>180||typeof x.color!=='string'||!/^#[0-9a-fA-F]{6}$/.test(x.color))throw Error('Ett lektionsmoment innehåller ogiltiga uppgifter.');return {name:x.name,min:x.min,color:x.color}}),end:p.end??null,displayMode:p.displayMode||'ring-time',visibleParts:p.visibleParts&&typeof p.visibleParts==='object'?{glass:!!p.visibleParts.glass,center:!!p.visibleParts.center,digits:!!p.visibleParts.digits}:undefined};
+  });
+  if(new Set(checked.map(p=>p.id)).size!==checked.length)throw Error('Filen innehåller dubbla elev-ID.');
+  if(!data.defaultEnd||!safeText(data.defaultEnd.message,2000)||!effects.includes(data.defaultEnd.effect))throw Error('Avslutningsinställningarna är ogiltiga.');
+  if(!data.settings||typeof data.settings!=='object')throw Error('Inställningarna saknas.');
+  const cleanSettings={...appearanceDefaults};
+  for(const key of ['glass','dark','glow','line','volume']){const n=data.settings[key];if(typeof n!=='number'||!Number.isFinite(n)||n<0||n>(key==='dark'?95:100))throw Error('Ogiltigt inställningsvärde: '+key);cleanSettings[key]=n}
+  if(data.settings.ringSize!==undefined){const n=data.settings.ringSize;if(typeof n!=='number'||!Number.isFinite(n)||n<70||n>200)throw Error('Ogiltig ringstorlek.');cleanSettings.ringSize=n}
+  if(data.settings.timeSize!==undefined){const n=data.settings.timeSize;if(typeof n!=='number'||!Number.isFinite(n)||n<70||n>350)throw Error('Ogiltig sifferstorlek.');cleanSettings.timeSize=n}if(data.settings.timeSlant!==undefined){const n=data.settings.timeSlant;if(typeof n!=='number'||!Number.isFinite(n)||n<0||n>35)throw Error('Ogiltig lutning.');cleanSettings.timeSlant=n}if(data.settings.timeFont!==undefined){if(!['modern','elegant','digital','thin','classicItalic','modernItalic'].includes(data.settings.timeFont))throw Error('Ogiltigt typsnitt.');cleanSettings.timeFont=data.settings.timeFont} for(const key of ['timeAutoFit','timePlateEnabled']){if(typeof data.settings[key]==='boolean')cleanSettings[key]=data.settings[key]}
+  for(const key of ['timeColor','timePlateColor','centerColor']){if(data.settings[key]!==undefined){if(typeof data.settings[key]!=='string'||!/^#[0-9a-fA-F]{6}$/.test(data.settings[key]))throw Error('Ogiltig färg: '+key);cleanSettings[key]=data.settings[key]}}
+  for(const key of ['timePlateOpacity','centerOpacity']){if(data.settings[key]!==undefined){const n=data.settings[key];if(typeof n!=='number'||!Number.isFinite(n)||n<0||n>100)throw Error('Ogiltig genomskinlighet.');cleanSettings[key]=n}}
+  for(const key of ['changeSoundEnabled','showEndText']){if(typeof data.settings[key]!=='boolean')throw Error('Ogiltig ljud- eller textinställning.');cleanSettings[key]=data.settings[key]}
+  if(!['bell','piano','sparkle'].includes(data.settings.changeSoundType))throw Error('Ogiltig ljudtyp.');cleanSettings.changeSoundType=data.settings.changeSoundType;
+  const choice=await new Promise(resolve=>{
+   const dialog=$('importDialog');$('importSummary').textContent=`Säkerhetskopian innehåller ${checked.length} elevupplägg. Vad vill du göra?`;
+   const finish=value=>{dialog.close();resolve(value)};
+   $('importReplace').onclick=()=>finish('replace');$('importAdd').onclick=()=>finish('add');$('importCancel').onclick=()=>finish('cancel');
+   dialog.oncancel=e=>{e.preventDefault();finish('cancel')};dialog.showModal();
+  });
+  if(choice==='cancel'){backupStatus('Importen avbröts. Inget ändrades.');return}
+  const replace=choice==='replace';
+  let nextProfiles,nextActive,nextDefault,nextSettings;
+  if(replace){nextProfiles=checked;nextActive=checked.some(p=>p.id===data.activeId)?data.activeId:checked[0].id;nextDefault={...data.defaultEnd};nextSettings=cleanSettings}
+  else{
+   saveAll();const used=new Set(profiles.map(p=>p.id));const names=new Set(profiles.map(p=>p.name));
+   const additions=checked.map(p=>{let id=p.id;while(used.has(id))id=uniqueId();used.add(id);let name=p.name;if(names.has(name)){name=p.name+' (importerad)';let i=2;while(names.has(name))name=p.name+` (importerad ${i++})`}names.add(name);return {...p,id,name}});
+   nextProfiles=[...profiles,...additions];nextActive=additions[additions.length-1].id;nextDefault={...defaultEnd};nextSettings={...settings};
+  }
+  // Skriv båda lagringsnycklarna innan appens tillstånd ändras.
+  const previousData=localStorage.getItem('piano-b30-data'),previousSettings=localStorage.getItem('piano-b332-settings');
+  try{localStorage.setItem('piano-b30-data',JSON.stringify({profiles:nextProfiles,activeId:nextActive,defaultEnd:nextDefault}));localStorage.setItem('piano-b332-settings',JSON.stringify(nextSettings))}
+  catch(e){try{if(previousData===null)localStorage.removeItem('piano-b30-data');else localStorage.setItem('piano-b30-data',previousData);if(previousSettings===null)localStorage.removeItem('piano-b332-settings');else localStorage.setItem('piano-b332-settings',previousSettings)}catch{}throw Error('Kunde inte spara på enheten.')}
+  stop();done=false;hideEnd();$('fire').replaceChildren();profiles=nextProfiles;activeId=nextActive;defaultEnd=nextDefault;settings=nextSettings;parts=currentProfile().parts.map(p=>({...p}));idx=0;left=parts[0].min*60;
+  updateProfileList();loadEndSettings();applySettings();draw();sync();backupStatus(replace?`Importerat! ${checked.length} elevupplägg har återställts.`:`Klart! ${checked.length} elevupplägg har lagts till.`);
+ }catch(e){backupStatus('Ingen import gjord: '+e.message);alert('Kunde inte importera säkerhetskopian.\n'+e.message)}
+};
+$('customEnd').onchange=()=>{$('customFields').classList.toggle('hidden',!$('customEnd').checked)};
+$('saveEnd').onclick=()=>{saveEndSettings();alert('Avslutningen är sparad!')};
+$('previewEnd').onclick=()=>{saveEndSettings();showEnd(true)};
+$('endPreviewClose').onclick=()=>{hideEnd();$('fire').replaceChildren()};
+$('fx').onclick=()=>{fx=!fx;$('fx').textContent=fx?'🎆 Fyrverkerier på':'🎆 Fyrverkerier av'};
+updateProfileList();loadEndSettings();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&run)tick()});draw();new MutationObserver(()=>{$('play').dataset.running=$('play').textContent.includes('Pausa')?'true':'false'}).observe($('play'),{childList:true,characterData:true,subtree:true})})();
+</script></body></html>
